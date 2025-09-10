@@ -3,7 +3,7 @@ import bagel.util.Point;
 import bagel.Font;
 import java.util.Properties;
 
-public class Room {
+public abstract class Room {
     public static final Image BACKGROUND_IMAGE = new Image("res/background.png");
 
     protected final Point HEALTH_STAT_COORD;
@@ -11,7 +11,6 @@ public class Room {
     protected final String HEALTH_DISPLAY;
     protected final String COIN_DISPLAY;
     protected final Font PLAYER_STATS_FONT;
-//    private Room currentRoom = new PrepRoom();
 
     /* Initialise the Room with the specified Stats coordinates and font size in app.properties */
     public Room(Properties gameProps, Properties msgProps){

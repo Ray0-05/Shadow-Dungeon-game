@@ -8,6 +8,7 @@ public class ShadowDungeon extends AbstractGame {
 
     // Initialise the player attributes
     private Player player;
+    private Room room;
 
 
     public ShadowDungeon(Properties gameProps, Properties messageProps) {
@@ -18,9 +19,8 @@ public class ShadowDungeon extends AbstractGame {
         this.GAME_PROPS = gameProps;
         this.MESSAGE_PROPS = messageProps;
 
-
         this.player = new Player(GAME_PROPS);
-
+        this.room  = new Room(GAME_PROPS, MESSAGE_PROPS);
     }
 
 
@@ -30,6 +30,7 @@ public class ShadowDungeon extends AbstractGame {
      */
     @Override
     protected void update(Input input) {
+        room.render();
         player.getCurrDirection().draw(player.getCoordinateX(), player.getCoordinateY());
         if (input.wasPressed(Keys.ESCAPE)) {
             Window.close();

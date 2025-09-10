@@ -1,13 +1,13 @@
 import bagel.*;
-import bagel.util.Point;
 
-import java.util.ArrayList;
-import java.util.Optional;
 import java.util.Properties;
 
 public class ShadowDungeon extends AbstractGame {
     private final Properties GAME_PROPS;
     private final Properties MESSAGE_PROPS;
+
+    // Initialise the player attributes
+    private Player player;
 
 
     public ShadowDungeon(Properties gameProps, Properties messageProps) {
@@ -17,6 +17,12 @@ public class ShadowDungeon extends AbstractGame {
 
         this.GAME_PROPS = gameProps;
         this.MESSAGE_PROPS = messageProps;
+
+        /* Initialise the player with its starting location and movement speed */
+        double playerSpeed = Double.parseDouble(GAME_PROPS.getProperty("movingSpeed"));
+        String playerStartPointStr = GAME_PROPS.getProperty("player.start");
+        this.player = new Player(playerStartPointStr, playerSpeed);
+
     }
 
 
@@ -26,8 +32,21 @@ public class ShadowDungeon extends AbstractGame {
      */
     @Override
     protected void update(Input input) {
+        player.getCurrDirection().draw(player.getCoordinateX(), player.getCoordinateY());
         if (input.wasPressed(Keys.ESCAPE)) {
             Window.close();
+        }
+        else if(input.isDown(Keys.D)){
+            player.moveRight();
+        }
+        else if(input.isDown(Keys.A)){
+            player.moveLeft();
+        }
+        else if(input.isDown(Keys.W)){
+            player.moveUp();
+        }
+        else if (input.isDown(Keys.S)){
+            player.moveDown();
         }
     }
 

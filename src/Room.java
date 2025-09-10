@@ -10,20 +10,26 @@ public abstract class Room {
     protected final Point COIN_STAT_COORD;
     protected final String HEALTH_DISPLAY;
     protected final String COIN_DISPLAY;
+    protected final String GAME_FONT_FILEPATH;
     protected final Font PLAYER_STATS_FONT;
 
     /* Initialise the Room with the specified Stats coordinates and font size in app.properties */
     public Room(Properties gameProps, Properties msgProps){
-        int statsFontSize = Integer.parseInt(gameProps.getProperty("playerStats.fontSize"));
-        String statsFontFilePath = gameProps.getProperty("font");
-
+        //Storing a Standard Font Style for all the Rooms
+        GAME_FONT_FILEPATH = gameProps.getProperty("font");
 
         /* Initialising the Font, Coordinates, Display Names for player stats display */
-        PLAYER_STATS_FONT = new Font(statsFontFilePath,statsFontSize);
+        PLAYER_STATS_FONT = getGameFontOfSize(gameProps.getProperty("playerStats.fontSize"));
         HEALTH_STAT_COORD = IOUtils.parseCoords(gameProps.getProperty("healthStat"));
         COIN_STAT_COORD = IOUtils.parseCoords(gameProps.getProperty("coinStat"));
         HEALTH_DISPLAY = msgProps.getProperty("healthDisplay");
         COIN_DISPLAY = msgProps.getProperty("coinDisplay");
+    }
+
+    /* Returns a Font where its style is constant with all the Rooms,
+     but with specified size (input) */
+    public Font getGameFontOfSize(String sizeStr){
+        return new Font(GAME_FONT_FILEPATH, Integer.parseInt(sizeStr));
     }
 
     public void render(){

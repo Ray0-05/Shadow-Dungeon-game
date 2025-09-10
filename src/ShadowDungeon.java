@@ -18,10 +18,8 @@ public class ShadowDungeon extends AbstractGame {
         this.GAME_PROPS = gameProps;
         this.MESSAGE_PROPS = messageProps;
 
-        /* Initialise the player with its starting location and movement speed */
-        double playerSpeed = Double.parseDouble(GAME_PROPS.getProperty("movingSpeed"));
-        String playerStartPointStr = GAME_PROPS.getProperty("player.start");
-        this.player = new Player(playerStartPointStr, playerSpeed);
+
+        this.player = new Player(GAME_PROPS);
 
     }
 

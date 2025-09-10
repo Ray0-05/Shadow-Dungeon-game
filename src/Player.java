@@ -1,29 +1,40 @@
 import bagel.Image;
 import bagel.util.Point;
 
+import java.util.Properties;
+
 public class Player {
+    /*-----------------------------------CONSTANTS--------------------------*/
+    
     // Defining left and right facing image of the player
     private final Image leftDirection = new Image("res/player_left.png");
     private final Image rightDirection = new Image("res/player_right.png");
     // Player's Speed
     private final double SPEED;
 
+    /*----------------------------------ATTRIBUTES ---------------------------*/
+    
     /* Player starts by facing right and the starting coordinate
      * is initialised by calling the constructor */
     private Image currDirection = rightDirection;
     private Point coordinate;
     private double xCoordinate;
     private double yCoordinate;
+    
+    /* Predefining player's starting properties */ 
+    private double health = 100;
+    private boolean isAlive = true;
+    private int coin = 0;
 
 
 
-    /* Constructor for initialising a player
-    - (facing left and in starting position) */
-    public Player(String strCoordinate, double speed){
-        this.coordinate = IOUtils.parseCoords(strCoordinate);
-        xCoordinate = coordinate.x;
-        yCoordinate = coordinate.y;
-        SPEED = speed;
+    /* Construct the player with its starting 
+    * location and movement speed gathered from gameProps*/
+    public Player(Properties gameProps){
+        this.SPEED = Double.parseDouble(gameProps.getProperty("movingSpeed"));
+        this.coordinate = IOUtils.parseCoords(gameProps.getProperty("player.start"));
+        this.xCoordinate = coordinate.x;
+        this.yCoordinate = coordinate.y;
     }
 
     public Image getCurrDirection() {
@@ -49,6 +60,8 @@ public class Player {
 
     public void setCoordinate(Point coordinate) {
         this.coordinate = coordinate;
+        this.xCoordinate = coordinate.x;
+        this.yCoordinate = coordinate.y;
     }
 
     /* Methods for moving RIGHT, LEFT, UP, DOWN */

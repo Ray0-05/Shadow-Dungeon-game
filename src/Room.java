@@ -62,6 +62,10 @@ public abstract class Room {
         }
     }
 
+    public Rectangle retrieveRestartAreaBox(){
+        return null;
+    }
+
     /* -----------------Default Methods to be used by any Room ----------------*/
 
     /* Returns a Font where its style is constant with

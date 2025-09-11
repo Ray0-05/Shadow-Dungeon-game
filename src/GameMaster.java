@@ -12,8 +12,8 @@ public class GameMaster {
     private Room currRoom;
     private PrepRoom prepRoom;
     private BattleRoomA battleRoomA;
-    private Room battleRoomB;
-    private Room endRoom;
+    private BattleRoomB battleRoomB;
+    private EndRoom endRoom;
 
     private Player player;
 
@@ -58,7 +58,7 @@ public class GameMaster {
             }else if (destinationRoomStr.equals(BATTLE_ROOM_B)){
                 enteringRoom = battleRoomB;
             }else if (destinationRoomStr.equals(END_ROOM)){
-
+                enteringRoom = new EndRoom(gameProps, msgProps, END_ROOM,true);
             }else{
                 System.out.println("When changing Room, the destinationRoomStr (defined in app.properties under doors) " +
                         "does not match the symbols of each room defined in the program");
@@ -92,16 +92,13 @@ public class GameMaster {
         this.prepRoom.unlockAllDoors();
     }
 
-    public boolean canRestart(){
+    public boolean canRestart() {
         // Only two rooms that has the restart area
-        if (currRoom.equals(this.prepRoom)){
-            if (player.isOverlappingWith(this.prepRoom.retrieveRestartAreaBox())){
+        if (currRoom instanceof Restartable) {
+            if (player.isOverlappingWith(this.currRoom.retrieveRestartAreaBox())) {
                 return true;
             }
         }
-//        else if(currRoom.equals(this.endRoom)){
-//            if (player.isOverlappingWith(this.endRoom.g))
-//        }
         return false;
     }
 

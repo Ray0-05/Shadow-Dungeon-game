@@ -4,23 +4,28 @@ import bagel.Image;
 import bagel.util.Point;
 
 public class PrepRoom extends Room {
+    // variables for the title attribute
     private final String TITLE;
     private final Font TITLE_FONT;
     private final double TITLE_YCOORD;
     private final double TITLE_XCOORD;
 
+    // variables for the move message attribute
     private final String MOVE_MSG;
     private final Font MOVE_MSG_FONT;
     private final double MOVE_MSG_YCOORD;
     private final double MOVE_MSG_XCOORD;
 
+    //variables for the restart_area attribute
     private final Image RESTART_AREA = new Image("res/restart_area.png");
     private final Point RESTART_AREA_COORD;
 
 
     public PrepRoom(Properties gameProps, Properties msgProps){
+        // Initialise the basic Display and attributes of a room
         super(gameProps, msgProps);
 
+        // Initialise PrepRoom specific displays and attributes
         TITLE = msgProps.getProperty("title");
         TITLE_FONT = super.getGameFontOfSize(gameProps.getProperty("title.fontSize"));
         TITLE_YCOORD = Double.parseDouble(gameProps.getProperty("title.y"));
@@ -35,6 +40,8 @@ public class PrepRoom extends Room {
 
     }
 
+    /* A method to render all the displays and attributes of a general room,
+    and also PrepRoom specific's displays (called in the update method) */
     @Override
     public void render(){
         super.render();

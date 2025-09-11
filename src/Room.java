@@ -10,7 +10,8 @@ public abstract class Room {
     protected final Point COIN_STAT_COORD;
     protected final String HEALTH_DISPLAY;
     protected final String COIN_DISPLAY;
-    protected final String GAME_FONT_FILEPATH;
+
+    protected final String GAME_FONT_FILEPATH;  // This Font is consistent for all the Rooms
     protected final Font PLAYER_STATS_FONT;
 
     /* Initialise the Room with the specified Stats coordinates and font size in app.properties */
@@ -28,10 +29,11 @@ public abstract class Room {
 
     /* Returns a Font where its style is constant with all the Rooms,
      but with specified size (input) */
-    public Font getGameFontOfSize(String sizeStr){
+    protected Font getGameFontOfSize(String sizeStr){
         return new Font(GAME_FONT_FILEPATH, Integer.parseInt(sizeStr));
     }
 
+    /* Renders a general room display's and attribute */
     public void render(){
         BACKGROUND_IMAGE.drawFromTopLeft(0,0);
         PLAYER_STATS_FONT.drawString(HEALTH_DISPLAY, HEALTH_STAT_COORD.x, HEALTH_STAT_COORD.y);

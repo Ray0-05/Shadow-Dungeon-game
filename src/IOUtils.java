@@ -33,5 +33,16 @@ public class IOUtils {
         String[] parts = attribute.split(",");
         return parseCoords(parts[0] + "," + parts[1]);
     }
+    public static Point[] parsePointList(String raw) {
+        if (raw == null || raw.trim().isEmpty() || raw.equals("0")) return new Point[0];
+        // Expecting: "x1,y1; x2,y2; x3,y3"
+        String[] parts = raw.split(";");
+        Point[] points = new Point[parts.length];
+        for (int i = 0; i < parts.length; i++) {
+            points[i] = parseCoords(parts[i].trim());
+        }
+        return points;
+    }
+
 
 }

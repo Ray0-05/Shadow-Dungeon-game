@@ -10,10 +10,21 @@ public class BattleRoomA extends Room{
         // Initialise the basic Display and attributes of a room
         super(gameProps, nameLabel);
 
+        // Read optional walls list from properties (semicolon-separated x,y pairs)
+        String wallsCoordRaw = gameProps.getProperty("wall.A");
+        Point[] wallCoords = IOUtils.parsePointList(wallsCoordRaw);
+
+        GameObject[] objs = new GameObject[wallCoords.length];
+        // Add each wall into the Room object list
+        for (int i = 0; i < wallCoords.length; i++) {
+            objs[i] = new Wall(wallCoords[i]);
+        }
+
         // Initialise PrepRoom specific displays and attributes
         setDoors(new Door[] {new Door(gameProps.getProperty("primarydoor.A")),
                 new Door(gameProps.getProperty("secondarydoor.A"))});
         setHasBoss(true);
+        setObjects(objs);
     }
 
 

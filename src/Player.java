@@ -2,16 +2,15 @@ import bagel.Font;
 import bagel.Image;
 import bagel.util.Point;
 import bagel.util.Rectangle;
-import org.lwjgl.system.windows.MSG;
 
 import java.util.Properties;
 
-public class Player {
+public class Player extends GameObject{
     /*-----------------------------------CONSTANTS--------------------------*/
     
     // Defining left and right facing image of the player, and also its bounding box
     private final Image LEFT_DIRECTION = new Image("res/player_left.png");
-    private final Image RIGHT_DIRIECTION = new Image("res/player_right.png");
+    private final Image RIGHT_DIRECTION = new Image("res/player_right.png");
     // Player's Speed
     private final double SPEED;
     // Player's maximum Xand Y coordinates
@@ -22,9 +21,6 @@ public class Player {
     
     /* Player starts by facing right and the starting coordinate
      * is initialised by calling the constructor */
-    private Image currDirection = RIGHT_DIRIECTION;
-    private Point coordinate;
-    private  Rectangle playerBoundingBox;
     
     /* Predefining player's starting stats properties */
     private double health = 100;
@@ -43,12 +39,12 @@ public class Player {
     /* Construct the player with its starting 
     * location, movement speed, and Health and Coin Display gathered from gameProps*/
     public Player(Properties gameProps, Properties msgProps){
+        super(IOUtils.parseCoords(gameProps.getProperty("player.start")),
+                "res/player_right.png", false);
+
         this.MAX_XCOORDINATE = Double.parseDouble(gameProps.getProperty("window.width"));
         this.MAX_YCOORDINATE = Double.parseDouble(gameProps.getProperty("window.height"));
-
-        coordinate = IOUtils.parseCoords(gameProps.getProperty("player.start"));
         this.SPEED = Double.parseDouble(gameProps.getProperty("movingSpeed"));
-        playerBoundingBox = LEFT_DIRECTION.getBoundingBoxAt(coordinate);
 
         /* Initialising the Font, Coordinates, Display Names for player stats display */
         PLAYER_STATS_FONT = new Font(gameProps.getProperty("font"),Integer.parseInt(gameProps.getProperty("playerStats.fontSize")));
@@ -79,51 +75,51 @@ public class Player {
     /* ------------Methods for moving RIGHT, LEFT, UP, DOWN --------------- */
 
     public void moveRight(){
-        if(this.isWithinBound(coordinate.x + SPEED, coordinate.y)){
-            updateCoordinateX(coordinate.x + SPEED);
+        if(this.isWithinBound(this.coordinate.x + SPEED, this.coordinate.y)){
+            updateCoordinateX(this.coordinate.x + SPEED);
         }
     }
     public void moveLeft(){
-        if(this.isWithinBound(coordinate.x - SPEED, coordinate.y)){
-            updateCoordinateX(coordinate.x - SPEED);
+        if(this.isWithinBound(this.coordinate.x - SPEED, this.coordinate.y)){
+            updateCoordinateX(this.coordinate.x - SPEED);
         }
     }
     public void moveUp(){
-        if (this.isWithinBound(coordinate.x, coordinate.y - SPEED)){
-            updateCoordinateY(coordinate.y - SPEED);
+        if (this.isWithinBound(this.coordinate.x, this.coordinate.y - SPEED)){
+            updateCoordinateY(this.coordinate.y - SPEED);
         }
     }
     public void moveDown(){
-        if (this.isWithinBound(coordinate.x, coordinate.y + SPEED)){
-            updateCoordinateY(coordinate.y + SPEED);
+        if (this.isWithinBound(this.coordinate.x, this.coordinate.y + SPEED)){
+            updateCoordinateY(this.coordinate.y + SPEED);
         }
     }
 
     /* ------------------helper functions for moving----------------*/
     private void updateCoordinateX(double x){
-        this.coordinate = new Point(x, coordinate.y);
+        this.coordinate = new Point(x, this.coordinate.y);
     }
     private void updateCoordinateY(double y){
-        this.coordinate = new Point(coordinate.x, y);
+        this.coordinate = new Point(this.coordinate.x, y);
     }
     private boolean isWithinBound(double xCoordinate, double yCoordinate){
-        if (xCoordinate - SPEED < 0 | xCoordinate > MAX_XCOORDINATE |
-                yCoordinate < 0 | yCoordinate > MAX_YCOORDINATE) return false;
+        if (xCoordinate - SPEED < 0 || xCoordinate > MAX_XCOORDINATE ||
+                yCoordinate < 0 || yCoordinate > MAX_YCOORDINATE) return false;
         return true;
     }
 
     /* ------------------------Method for checking if the player overlaps with the area of other objects----------*/
     public boolean isOverlappingWith(Rectangle object){
-        if (playerBoundingBox.intersects(object)) return true;
+        if (boundingBox.intersects(object)) return true;
         return false;
     }
     /* Method for rendering the player */
 
     public void render(){
-        playerBoundingBox = LEFT_DIRECTION.getBoundingBoxAt(coordinate);
-        currDirection.draw(coordinate.x, coordinate.y);
-        PLAYER_STATS_FONT.drawString(HEALTH_DISPLAY + ' ' + health, HEALTH_STAT_COORD.x, HEALTH_STAT_COORD.y);
-        PLAYER_STATS_FONT.drawString(COIN_DISPLAY +  ' ' + coin, COIN_STAT_COORD.x, COIN_STAT_COORD.y);
+        super.render();
+        updateBoundingBox();
+        PLAYER_STATS_FONT.drawString(HEALTH_DISPLAY + " " + health, HEALTH_STAT_COORD.x, HEALTH_STAT_COORD.y);
+        PLAYER_STATS_FONT.drawString(COIN_DISPLAY +  " " + coin, COIN_STAT_COORD.x, COIN_STAT_COORD.y);
     }
 
 }

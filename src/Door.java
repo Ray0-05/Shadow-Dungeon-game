@@ -12,10 +12,14 @@ public class Door {
 
     private boolean isLocked = false;
     private Image currDoorStatus = DOOR_UNLOCKED;
+    private String nextRoom;
     private Point coordinate;
 
-    public Door(Point coordinate){
-        this.coordinate = coordinate;
+    public Door(String attribute){
+        String[] attributeSplited = attribute.split(",");
+        String coordinateStr = attributeSplited[0] + ',' + attributeSplited[1];
+        this.coordinate = IOUtils.parseCoords(coordinateStr);
+        this.nextRoom = attributeSplited[2];
     }
 
     public void unlock(){
@@ -27,6 +31,9 @@ public class Door {
         this.isLocked = true;
         currDoorStatus = DOOR_LOCKED;
     }
+    public String getNextRoom(){
+        return nextRoom;
+    }
 
     public boolean inContact(Rectangle Player){
         if (!isLocked){
@@ -35,6 +42,10 @@ public class Door {
             }
         }
         return false;
+    }
+
+    public void render(){
+        currDoorStatus.draw(coordinate.x, coordinate.y);
     }
 
 }

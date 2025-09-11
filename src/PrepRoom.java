@@ -16,9 +16,12 @@ public class PrepRoom extends Room {
     private final double MOVE_MSG_YCOORD;
     private final double MOVE_MSG_XCOORD;
 
-    //variables for the restart_area attribute
+    // variables for the restart_area attribute
     private final Image RESTART_AREA = new Image("res/restart_area.png");
     private final Point RESTART_AREA_COORD;
+
+    // Door to Battle Room A
+    Door doorToBattleRoomA;
 
 
     public PrepRoom(Properties gameProps, Properties msgProps){
@@ -37,6 +40,8 @@ public class PrepRoom extends Room {
         MOVE_MSG_XCOORD = 512 - MOVE_MSG_FONT.getWidth(MOVE_MSG)/2;
 
         RESTART_AREA_COORD = IOUtils.parseCoords(gameProps.getProperty("restartarea.prep"));
+
+        super.doors = new Door[] {new Door(gameProps.getProperty("door.prep"))};
 
     }
 

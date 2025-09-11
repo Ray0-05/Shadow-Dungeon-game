@@ -14,6 +14,8 @@ public abstract class Room {
     protected final String GAME_FONT_FILEPATH;  // This Font is consistent for all the Rooms
     protected final Font PLAYER_STATS_FONT;
 
+    protected Door[] doors;
+
     /* Initialise the Room with the specified Stats coordinates and font size in app.properties */
     public Room(Properties gameProps, Properties msgProps){
         //Storing a Standard Font Style for all the Rooms
@@ -38,5 +40,8 @@ public abstract class Room {
         BACKGROUND_IMAGE.drawFromTopLeft(0,0);
         PLAYER_STATS_FONT.drawString(HEALTH_DISPLAY, HEALTH_STAT_COORD.x, HEALTH_STAT_COORD.y);
         PLAYER_STATS_FONT.drawString(COIN_DISPLAY, COIN_STAT_COORD.x, COIN_STAT_COORD.y);
+        for (Door door : doors){
+            door.render();
+        }
     }
 }

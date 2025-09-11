@@ -11,9 +11,9 @@ public class BattleRoomA extends Room{
         super(gameProps, nameLabel);
 
         // Initialise PrepRoom specific displays and attributes
-        super.doors = new Door[] {new Door(gameProps.getProperty("primarydoor.A")),
-                                  new Door(gameProps.getProperty("secondarydoor.A"))};
-
+        setDoors(new Door[] {new Door(gameProps.getProperty("primarydoor.A")),
+                new Door(gameProps.getProperty("secondarydoor.A"))});
+        setHasBoss(true);
     }
 
 

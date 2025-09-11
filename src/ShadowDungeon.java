@@ -1,10 +1,12 @@
 import bagel.*;
+import bagel.util.Point;
 
 import java.util.Properties;
 
 public class ShadowDungeon extends AbstractGame {
     private final Properties GAME_PROPS;
     private final Properties MESSAGE_PROPS;
+
 
     private GameMaster gameMaster;
 
@@ -27,11 +29,12 @@ public class ShadowDungeon extends AbstractGame {
      */
     @Override
     protected void update(Input input) {
-        gameMaster.render();
+        // 1) Quick exit
         if (input.wasPressed(Keys.ESCAPE)) {
             Window.close();
         }
 
+        // 2) Movement input → move player
         if (input.isDown(Keys.D)) {
             gameMaster.movePlayerRight();
         } else if (input.isDown(Keys.A)) {
@@ -42,15 +45,19 @@ public class ShadowDungeon extends AbstractGame {
             gameMaster.movePlayerDown();
         }
 
-        if (input.wasPressed(Keys.R) && gameMaster.canTypeRToUnlockDoor()){
+        // 3) One-shot actions
+        if (input.wasPressed(Keys.R) && gameMaster.canTypeRToUnlockDoor()) {
             gameMaster.unlockPrepRoomDoor();
         }
-
-        if (input.wasPressed(Keys.ENTER) && gameMaster.canRestart()){
+        if (input.wasPressed(Keys.ENTER) && gameMaster.canRestart()) {
             gameMaster = new GameMaster(GAME_PROPS, MESSAGE_PROPS);
         }
 
+        // 4) Resolve room transitions after movement
         gameMaster.checkIfChangeRoom();
+
+        // 5) render the current room + player
+        gameMaster.render();
     }
 
 

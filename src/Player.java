@@ -59,7 +59,7 @@ public class Player extends GameObject{
     and returns null if its not entering a new room */
     public String isEnteringNewRoom(Door[] doors){
         for (Door door: doors){
-            if (!door.getIsLocked() && this.isOverlappingWith(door.getBoundingBox())) {
+            if (door.canTeleport(this)) {
                 return door.getNextRoom();
             }
         }
@@ -74,24 +74,41 @@ public class Player extends GameObject{
 
     /* ------------Methods for moving RIGHT, LEFT, UP, DOWN --------------- */
 
-    public void moveRight(){
-        if(this.isWithinBound(this.coordinate.x + SPEED, this.coordinate.y)){
-            updateCoordinateX(this.coordinate.x + SPEED);
+    public void moveRight(Room room) {
+        Point newPos = new Point(this.coordinate.x + SPEED, this.coordinate.y);
+        Rectangle newBox = sprite.getBoundingBoxAt(newPos);
+
+        if (room.canMoveTo(newBox) && isWithinBound(newPos.x, newPos.y)) {
+            this.coordinate = newPos;
+            updateBoundingBox();
         }
     }
-    public void moveLeft(){
-        if(this.isWithinBound(this.coordinate.x - SPEED, this.coordinate.y)){
-            updateCoordinateX(this.coordinate.x - SPEED);
+
+    public void moveLeft(Room room){
+        Point newPos = new Point(this.coordinate.x - SPEED, this.coordinate.y);
+        Rectangle newBox = sprite.getBoundingBoxAt(newPos);
+
+        if (room.canMoveTo(newBox) && isWithinBound(newPos.x, newPos.y)) {
+            this.coordinate = newPos;
+            updateBoundingBox();
         }
     }
-    public void moveUp(){
-        if (this.isWithinBound(this.coordinate.x, this.coordinate.y - SPEED)){
-            updateCoordinateY(this.coordinate.y - SPEED);
+    public void moveUp(Room room){
+        Point newPos = new Point(this.coordinate.x, this.coordinate.y - SPEED);
+        Rectangle newBox = sprite.getBoundingBoxAt(newPos);
+
+        if (room.canMoveTo(newBox) && isWithinBound(newPos.x, newPos.y)) {
+            this.coordinate = newPos;
+            updateBoundingBox();
         }
     }
-    public void moveDown(){
-        if (this.isWithinBound(this.coordinate.x, this.coordinate.y + SPEED)){
-            updateCoordinateY(this.coordinate.y + SPEED);
+    public void moveDown(Room room){
+        Point newPos = new Point(this.coordinate.x, this.coordinate.y + SPEED);
+        Rectangle newBox = sprite.getBoundingBoxAt(newPos);
+
+        if (room.canMoveTo(newBox) && isWithinBound(newPos.x, newPos.y)) {
+            this.coordinate = newPos;
+            updateBoundingBox();
         }
     }
 
@@ -102,11 +119,12 @@ public class Player extends GameObject{
     private void updateCoordinateY(double y){
         this.coordinate = new Point(this.coordinate.x, y);
     }
-    private boolean isWithinBound(double xCoordinate, double yCoordinate){
-        if (xCoordinate - SPEED < 0 || xCoordinate > MAX_XCOORDINATE ||
-                yCoordinate < 0 || yCoordinate > MAX_YCOORDINATE) return false;
-        return true;
+
+    private boolean isWithinBound(double x, double y){
+        return x >= 0 && x <= MAX_XCOORDINATE
+                && y >= 0 && y <= MAX_YCOORDINATE;
     }
+
 
     /* ------------------------Method for checking if the player overlaps with the area of other objects----------*/
     public boolean isOverlappingWith(Rectangle object){
@@ -116,8 +134,8 @@ public class Player extends GameObject{
     /* Method for rendering the player */
 
     public void render(){
-        super.render();
         updateBoundingBox();
+        super.render();
         PLAYER_STATS_FONT.drawString(HEALTH_DISPLAY + " " + health, HEALTH_STAT_COORD.x, HEALTH_STAT_COORD.y);
         PLAYER_STATS_FONT.drawString(COIN_DISPLAY +  " " + coin, COIN_STAT_COORD.x, COIN_STAT_COORD.y);
     }

@@ -31,17 +31,17 @@ public class PrepRoom extends Room implements Restartable {
         TITLE = msgProps.getProperty("title");
         TITLE_FONT = super.getGameFontOfSize(gameProps.getProperty("title.fontSize"));
         TITLE_YCOORD = Double.parseDouble(gameProps.getProperty("title.y"));
-        TITLE_XCOORD = 512 - TITLE_FONT.getWidth(TITLE)/2;
+        TITLE_XCOORD = CENTRE_OF_ROOM.x - (TITLE_FONT.getWidth(TITLE)/2);
 
         MOVE_MSG = msgProps.getProperty("moveMessage");
         MOVE_MSG_FONT = super.getGameFontOfSize((gameProps.getProperty("prompt.fontSize")));
         MOVE_MSG_YCOORD = Double.parseDouble(gameProps.getProperty("moveMessage.y"));
-        MOVE_MSG_XCOORD = 512 - MOVE_MSG_FONT.getWidth(MOVE_MSG)/2;
+        MOVE_MSG_XCOORD = CENTRE_OF_ROOM.x - (MOVE_MSG_FONT.getWidth(MOVE_MSG)/2);
 
         RESTART_AREA_COORD = getRestartAreaCoordinate(gameProps, "res/restartarea.prep");
         RESTART_AREA_BOX = getRESTART_AREA_BOX(RESTART_AREA_COORD);
 
-        super.doors = new Door[] {new Door(gameProps.getProperty("door.prep"))};
+        setDoors(new Door[] {new Door(gameProps.getProperty("door.prep"))});
 
     }
 

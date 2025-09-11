@@ -32,24 +32,26 @@ public class GameMaster {
     }
     /* -------------Methods below is for moving players around-------------*/
     public void movePlayerRight(){
-        player.moveRight();
+//        if(player.isOverlappingWith())
+        player.moveRight(currRoom);
     }
     public void movePlayerLeft(){
-        player.moveLeft();
+        player.moveLeft(currRoom);
     }
     public void movePlayerUp(){
-        player.moveUp();
+        player.moveUp(currRoom);
     }
     public void movePlayerDown(){
-        player.moveDown();
+        player.moveDown(currRoom);
     }
 
     public void checkIfChangeRoom(){
-        String destinationRoomStr = player.isEnteringNewRoom(currRoom.doors);
+        String destinationRoomStr = player.isEnteringNewRoom(currRoom.getDoors());
         Room enteringRoom = null;
 
         // Check if we need to change room
         if (destinationRoomStr != null){
+
             if (destinationRoomStr.equals(PREPROOM_STR)){
                 enteringRoom = prepRoom;
             }else if (destinationRoomStr.equals(BATTLE_ROOM_A)){
@@ -63,10 +65,20 @@ public class GameMaster {
                         "does not match the symbols of each room defined in the program");
                 System.exit(1);
             }
+            // Find the linking door in new room
             String prevRoomName = currRoom.getNAME_LABEL();
-            Point newRoomLinkingDoor = enteringRoom.getDoorCoord(prevRoomName);
+            Door newRoomLinkingDoor = enteringRoom.findDoorTo(prevRoomName);
+
+            // Teleport to new room
             currRoom = enteringRoom;
-            player.teleportTo(newRoomLinkingDoor);
+            player.teleportTo(newRoomLinkingDoor.getCoordinate());
+
+            // Identify and configure the entry door (the one that links back to prevRoomName)
+            Door entryDoor = currRoom.findDoorTo(prevRoomName); // uses the helper we'll add in Room (Part 1 Edit 3)
+            if (entryDoor != null) {
+                entryDoor.markAsEntryDoor(currRoom.hasBoss());  // open + ignore overlap; closes after stepping away if boss room
+            }
+
         }
     }
 

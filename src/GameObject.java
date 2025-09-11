@@ -30,6 +30,7 @@ public abstract class GameObject {
 
     protected  void updateSpriteImage(Image sprite){
         this.sprite = sprite;
+        updateBoundingBox();
     }
     // ------Perhaps different image will represent different overlapping state ---
     protected  void updateSpriteImage(Image sprite, boolean overlappable){
@@ -41,6 +42,4 @@ public abstract class GameObject {
         sprite.draw(coordinate.x, coordinate.y);
     }
 
-    // Allow subclasses to define special behaviour (optional)
-    public void onPlayerCollision(Player player) { }
 }

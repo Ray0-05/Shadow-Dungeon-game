@@ -116,6 +116,7 @@ public class GameMaster {
         currRoom.resolveCollectibles(player);
     }
 
+    public void updatePlayerFacingByMouseX(double mouseX){ this.player.updateFacingByMouseX(mouseX); };
 
 
     public void render(){

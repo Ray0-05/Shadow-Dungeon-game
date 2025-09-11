@@ -2,6 +2,7 @@ import bagel.Font;
 import bagel.Image;
 import bagel.util.Point;
 import bagel.util.Rectangle;
+import bagel.Input;
 
 import java.util.Locale;
 import java.util.Properties;
@@ -54,6 +55,15 @@ public class Player extends GameObject{
         HEALTH_DISPLAY = msgProps.getProperty("healthDisplay");
         COIN_DISPLAY = msgProps.getProperty("coinDisplay");
     }
+
+    public void updateFacingByMouseX(double mouseX) {
+        if (mouseX > coordinate.x) {
+            updateSpriteImage(RIGHT_DIRECTION);  // sets sprite and updates bbox
+        } else if (mouseX < coordinate.x) {
+            updateSpriteImage(LEFT_DIRECTION);
+        }
+    }
+
 
     /* ------------Method for checking if the player is entering a new room ---------*/
     /* returns the specific room string its entering if there's any,
@@ -114,12 +124,6 @@ public class Player extends GameObject{
     }
 
     /* ------------------helper functions for moving----------------*/
-    private void updateCoordinateX(double x){
-        this.coordinate = new Point(x, this.coordinate.y);
-    }
-    private void updateCoordinateY(double y){
-        this.coordinate = new Point(this.coordinate.x, y);
-    }
 
     private boolean isWithinBound(double x, double y){
         return x >= 0 && x <= MAX_XCOORDINATE
@@ -144,8 +148,6 @@ public class Player extends GameObject{
     public boolean getIsAlive(){
         return isAlive;
     }
-
-    public int getCoins() { return coin; }
 
     public void addCoins(int amount) {
         if (amount <= 0) return;

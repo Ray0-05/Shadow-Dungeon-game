@@ -45,16 +45,20 @@ public class ShadowDungeon extends AbstractGame {
             gameMaster.movePlayerDown();
         }
 
+        // 3) Direction of Player
+        gameMaster.updatePlayerFacingByMouseX(input.getMouseX());
+
+
         // 3) One-shot actions
-        // Check if can manually open door
+        // Check if the player can remotely open the door
         if (input.wasPressed(Keys.R) && gameMaster.canTypeRToUnlockDoor()) {
             gameMaster.unlockPrepRoomDoor();
         }
-        // Check if can manually restart game
+        // Check if the player can manually restart game
         if (input.wasPressed(Keys.ENTER) && gameMaster.canRestart()) {
             gameMaster = new GameMaster(GAME_PROPS, MESSAGE_PROPS);
         }
-        // Check if can collect coins
+        // Check if the player can collect coins
         if (input.wasPressed(Keys.K)){
             gameMaster.updateCollectibles();
         }

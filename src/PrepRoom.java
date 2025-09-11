@@ -2,8 +2,9 @@ import java.util.Properties;
 import bagel.Font;
 import bagel.Image;
 import bagel.util.Point;
+import bagel.util.Rectangle;
 
-public class PrepRoom extends Room {
+public class PrepRoom extends Room implements Restartable {
     // variables for the title attribute
     private final String TITLE;
     private final Font TITLE_FONT;
@@ -17,8 +18,8 @@ public class PrepRoom extends Room {
     private final double MOVE_MSG_XCOORD;
 
     // variables for the restart_area attribute
-    private final Image RESTART_AREA = new Image("res/restart_area.png");
     private final Point RESTART_AREA_COORD;
+    private final Rectangle RESTART_AREA_BOX;
 
 
 
@@ -37,10 +38,15 @@ public class PrepRoom extends Room {
         MOVE_MSG_YCOORD = Double.parseDouble(gameProps.getProperty("moveMessage.y"));
         MOVE_MSG_XCOORD = 512 - MOVE_MSG_FONT.getWidth(MOVE_MSG)/2;
 
-        RESTART_AREA_COORD = IOUtils.parseCoords(gameProps.getProperty("restartarea.prep"));
+        RESTART_AREA_COORD = getRestartAreaCoordinate(gameProps, "res/restartarea.prep");
+        RESTART_AREA_BOX = getRESTART_AREA_BOX(RESTART_AREA_COORD);
 
         super.doors = new Door[] {new Door(gameProps.getProperty("door.prep"))};
 
+    }
+
+    public Rectangle retrieveRestartAreaBox(){
+        return RESTART_AREA_BOX;
     }
 
     /* A method to render all the displays and attributes of a general room,

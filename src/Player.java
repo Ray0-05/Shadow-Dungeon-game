@@ -63,7 +63,7 @@ public class Player {
     and returns null if its not entering a new room */
     public String isEnteringNewRoom(Door[] doors){
         for (Door door: doors){
-            if (!door.getIsLocked() && this.playerBoundingBox.intersects(door.getBoundingBox())) {
+            if (!door.getIsLocked() && this.isOverlappingWith(door.getBoundingBox())) {
                 return door.accessToRoom();
             }
         }
@@ -106,13 +106,18 @@ public class Player {
     private void updateCoordinateY(double y){
         this.coordinate = new Point(coordinate.x, y);
     }
-    public boolean isWithinBound(double xCoordinate, double yCoordinate){
+    private boolean isWithinBound(double xCoordinate, double yCoordinate){
         if (xCoordinate - SPEED < 0 | xCoordinate > MAX_XCOORDINATE |
                 yCoordinate < 0 | yCoordinate > MAX_YCOORDINATE) return false;
         return true;
     }
 
-    /* Method for rendering the player (called in Shadowdungeon update() */
+    /* ------------------------Method for checking if the player overlaps with the area of other objects----------*/
+    public boolean isOverlappingWith(Rectangle object){
+        if (playerBoundingBox.intersects(object)) return true;
+        return false;
+    }
+    /* Method for rendering the player */
 
     public void render(){
         playerBoundingBox = LEFT_DIRECTION.getBoundingBoxAt(coordinate);

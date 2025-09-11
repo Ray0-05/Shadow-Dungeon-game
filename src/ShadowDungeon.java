@@ -6,8 +6,7 @@ public class ShadowDungeon extends AbstractGame {
     private final Properties GAME_PROPS;
     private final Properties MESSAGE_PROPS;
 
-    private final GameMaster GAME_MASTER;
-    private final Player PLAYER;
+    private GameMaster gameMaster;
 
 
     public ShadowDungeon(Properties gameProps, Properties messageProps) {
@@ -18,8 +17,7 @@ public class ShadowDungeon extends AbstractGame {
         this.GAME_PROPS = gameProps;
         this.MESSAGE_PROPS = messageProps;
 
-        PLAYER = new Player(GAME_PROPS, MESSAGE_PROPS);
-        GAME_MASTER = new GameMaster(GAME_PROPS, MESSAGE_PROPS, PLAYER);
+        gameMaster = new GameMaster(GAME_PROPS, MESSAGE_PROPS);
     }
 
 
@@ -29,26 +27,30 @@ public class ShadowDungeon extends AbstractGame {
      */
     @Override
     protected void update(Input input) {
-        GAME_MASTER.render();
+        gameMaster.render();
         if (input.wasPressed(Keys.ESCAPE)) {
             Window.close();
         }
 
         if (input.isDown(Keys.D)) {
-            PLAYER.moveRight();
+            gameMaster.movePlayerRight();
         } else if (input.isDown(Keys.A)) {
-            PLAYER.moveLeft();
+            gameMaster.movePlayerLeft();
         } else if (input.isDown(Keys.W)) {
-            PLAYER.moveUp();
+            gameMaster.movePlayerUp();
         } else if (input.isDown(Keys.S)) {
-            PLAYER.moveDown();
+            gameMaster.movePlayerDown();
         }
 
-        if (input.wasPressed(Keys.R) && GAME_MASTER.canTypeRToUnlockDoor()){
-            GAME_MASTER.unlockPrepRoomDoor();
+        if (input.wasPressed(Keys.R) && gameMaster.canTypeRToUnlockDoor()){
+            gameMaster.unlockPrepRoomDoor();
         }
 
-        GAME_MASTER.checkIfChangeRoom();
+        if (input.wasPressed(Keys.ENTER) && gameMaster.canRestart()){
+            gameMaster = new GameMaster(GAME_PROPS, MESSAGE_PROPS);
+        }
+
+        gameMaster.checkIfChangeRoom();
     }
 
 

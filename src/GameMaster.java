@@ -12,13 +12,16 @@ public class GameMaster {
     private final Properties gameProps;
     private final Properties msgProps;
     private Room currRoom;
-    private Room prepRoom;
-    private Room batteRoomA;
+    private PrepRoom prepRoom;
+    private BattleRoomA batteRoomA;
+    private Room battleRoomB;
+    private Room endRoom;
+
     private Player player;
 
-    public GameMaster(Properties gameProps, Properties msgProps, Player player){
+    public GameMaster(Properties gameProps, Properties msgProps){
         // Assign the player and initialise all the rooms and signify the currRoom as PrepRoom
-        this.player = player;
+        this.player = new Player(gameProps, msgProps);
 
         this.prepRoom = new PrepRoom(gameProps, msgProps, PREPROOM_STR);
         this.batteRoomA = new BattleRoomA(gameProps, BATTLE_ROOM_A);
@@ -26,6 +29,19 @@ public class GameMaster {
         this.currRoom = this.prepRoom;
         this.gameProps = gameProps;
         this.msgProps = msgProps;
+    }
+    /* -------------Methods below is for moving players around-------------*/
+    public void movePlayerRight(){
+        player.moveRight();
+    }
+    public void movePlayerLeft(){
+        player.moveLeft();
+    }
+    public void movePlayerUp(){
+        player.moveUp();
+    }
+    public void movePlayerDown(){
+        player.moveDown();
     }
 
     public void checkIfChangeRoom(){
@@ -63,6 +79,19 @@ public class GameMaster {
 
     public void unlockPrepRoomDoor(){
         this.prepRoom.unlockAllDoors();
+    }
+
+    public boolean canRestart(){
+        // Only two rooms that has the restart area
+        if (currRoom.equals(this.prepRoom)){
+            if (player.isOverlappingWith(this.prepRoom.retrieveRestartAreaBox())){
+                return true;
+            }
+        }
+//        else if(currRoom.equals(this.endRoom)){
+//            if (player.isOverlappingWith(this.endRoom.g))
+//        }
+        return false;
     }
 
     public void render(){

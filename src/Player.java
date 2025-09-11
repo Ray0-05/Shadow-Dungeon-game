@@ -3,6 +3,7 @@ import bagel.Image;
 import bagel.util.Point;
 import bagel.util.Rectangle;
 
+import java.util.Locale;
 import java.util.Properties;
 
 public class Player extends GameObject{
@@ -131,12 +132,25 @@ public class Player extends GameObject{
         if (boundingBox.intersects(object)) return true;
         return false;
     }
-    /* Method for rendering the player */
 
+    public void takeDamage(double amount) {
+        if (!isAlive) return;
+        this.health -= amount;
+        if (this.health <= 0) {
+            this.isAlive = false;
+        }
+    }
+
+    public boolean getIsAlive(){
+        return isAlive;
+    }
+
+    /* Method for rendering the player */
     public void render(){
         updateBoundingBox();
         super.render();
-        PLAYER_STATS_FONT.drawString(HEALTH_DISPLAY + " " + health, HEALTH_STAT_COORD.x, HEALTH_STAT_COORD.y);
+        String healthText = String.format(Locale.US, "%.1f", this.health); // Format to one decimal place
+        PLAYER_STATS_FONT.drawString(HEALTH_DISPLAY + " " + healthText, HEALTH_STAT_COORD.x, HEALTH_STAT_COORD.y);
         PLAYER_STATS_FONT.drawString(COIN_DISPLAY +  " " + coin, COIN_STAT_COORD.x, COIN_STAT_COORD.y);
     }
 

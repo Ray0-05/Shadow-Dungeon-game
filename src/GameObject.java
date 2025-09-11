@@ -3,6 +3,7 @@ import bagel.util.Point;
 import bagel.util.Rectangle;
 
 public abstract class GameObject {
+    protected final Point INITIAL_POSITION;
     protected Point coordinate;           // position
     protected Image sprite;               // image to render
     protected Rectangle boundingBox;      // collision area
@@ -10,6 +11,7 @@ public abstract class GameObject {
 
     public GameObject(Point coordinate, String imagePath, boolean overlappable) {
         this.coordinate = coordinate;
+        this.INITIAL_POSITION = coordinate;
         this.sprite = new Image(imagePath);
         this.boundingBox = sprite.getBoundingBoxAt(coordinate);
         this.overlappable = overlappable;
@@ -19,6 +21,7 @@ public abstract class GameObject {
     public Point getCoordinate() { return coordinate; }
     public Rectangle getBoundingBox() { return boundingBox; }
     public boolean isOverlappable() { return overlappable; }
+    public Point getINITIAL_POSITION(){ return INITIAL_POSITION;}
 
     // ----- Update bounding box when moving (only for player for this assignment)-----
     protected void updateBoundingBox() {

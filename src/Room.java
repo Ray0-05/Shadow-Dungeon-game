@@ -54,6 +54,11 @@ public abstract class Room {
         return false;
     }
 
+    /* Non-battle rooms have no hazards by default. */
+    public void resolveHazards(Player player) {
+        // no-op
+    }
+
     /* Renders a general room (non battle) display's and attribute */
     public void render(){
         BACKGROUND_IMAGE.drawFromTopLeft(0, 0);

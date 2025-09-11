@@ -102,8 +102,22 @@ public class GameMaster {
         return false;
     }
 
+    public void updateHazards() {
+        currRoom.resolveHazards(player);
+        if (!player.getIsAlive()) {
+            // go to defeat end room immediately when health reaches 0
+            currRoom = new EndRoom(gameProps, msgProps, END_ROOM, false);
+            player.teleportTo(player.getINITIAL_POSITION());
+        }
+    }
+
+
     public void render(){
-        currRoom.resolveEnemyTouches(player); // Touch-to-kill + unlock-all-doors-when-clear
+        if (currRoom instanceof BattleRoom) {
+            //only render this if its relevant
+            currRoom.resolveEnemyTouches(player); // Touch-to-kill + unlock-all-doors-when-clear
+            updateHazards();
+        }
         currRoom.render();
         player.render();
     }

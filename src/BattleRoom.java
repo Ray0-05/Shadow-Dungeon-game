@@ -56,6 +56,21 @@ public abstract class BattleRoom extends Room {
         }
     }
 
+    @Override
+    public void resolveHazards(Player player) {
+        if (objects == null) return;
+
+        for (GameObject obj : objects) {
+            if (obj instanceof River) {
+                if (player.getBoundingBox().intersects(obj.getBoundingBox())) {
+                    player.takeDamage(((River) obj).getDamagePerFrame());
+                }
+            }
+        }
+    }
+
+
+
     // ---- Rendering ----
     @Override
     public void render(){
@@ -86,18 +101,23 @@ public abstract class BattleRoom extends Room {
         Point[] wallCoords = IOUtils.parsePointList(wallsCoordsRaw);
 
         // Read optional Water list from properties
-//        String riverTilesCoordsRaw = gameProps.getProperty("river." + labelOfRoom);
-//        Point[] riverTilesCoords = IOUtils.parsePointList(riverTilesCoordsRaw);
+        String riverTilesCoordsRaw = gameProps.getProperty("river." + labelOfRoom);
+        Point[] riverTilesCoords = IOUtils.parsePointList(riverTilesCoordsRaw);
+        double riverDamagePerFrame = Double.parseDouble(gameProps.getProperty("riverDamagePerFrame"));
 
         // Read in Enemies
         Enemy[] enemies = buildKeyBulletKinList(IOUtils.parsePointList(gameProps.getProperty("keyBulletKin." +
                 ""+labelOfRoom)));
 
         // Initialise the game objects
-        GameObject[] objs = new GameObject[wallCoords.length];
+        GameObject[] objs = new GameObject[wallCoords.length + riverTilesCoords.length];
         // Add each wall into the Room object list
         for (int i = 0; i < wallCoords.length; i++) {
             objs[i] = new Wall(wallCoords[i]);
+        }
+        // Add each river into the Room object list
+        for (int i = wallCoords.length; i < wallCoords.length + riverTilesCoords.length; i++){
+            objs[i]= new River(riverTilesCoords[i], riverDamagePerFrame);
         }
 
         // Initialise BattleRoom specific displays and attributes

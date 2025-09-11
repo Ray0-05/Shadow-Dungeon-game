@@ -28,6 +28,11 @@ public abstract class GameObject {
     protected  void updateSpriteImage(Image sprite){
         this.sprite = sprite;
     }
+    // ------Perhaps different image will represent different overlapping state ---
+    protected  void updateSpriteImage(Image sprite, boolean overlappable){
+        this.sprite = sprite;
+        this.overlappable = overlappable;
+    }
     // ----- Render the object -----
     public void render() {
         sprite.draw(coordinate.x, coordinate.y);

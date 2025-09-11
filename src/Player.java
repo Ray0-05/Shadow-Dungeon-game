@@ -60,7 +60,7 @@ public class Player extends GameObject{
     public String isEnteringNewRoom(Door[] doors){
         for (Door door: doors){
             if (!door.getIsLocked() && this.isOverlappingWith(door.getBoundingBox())) {
-                return door.accessToRoom();
+                return door.getNextRoom();
             }
         }
         return null;

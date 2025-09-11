@@ -29,4 +29,9 @@ public class IOUtils {
         String[] coordinates = coords.split(",");
         return new Point(Double.parseDouble(coordinates[0]), Double.parseDouble(coordinates[1]));
     }
+    public static Point parseCoordinateFromDoorAttribute(String attribute) {
+        String[] parts = attribute.split(",");
+        return parseCoords(parts[0] + "," + parts[1]);
+    }
+
 }

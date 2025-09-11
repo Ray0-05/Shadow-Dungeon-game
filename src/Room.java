@@ -31,7 +31,7 @@ public abstract class Room {
                 the room that the door have access to----------*/
     protected Point getDoorCoord(String destinationRoom){
         for (Door door : doors){
-            if (door.accessToRoom().equals(destinationRoom)){
+            if (door.getNextRoom().equals(destinationRoom)){
                 return door.getCoordinate();
             }
         }

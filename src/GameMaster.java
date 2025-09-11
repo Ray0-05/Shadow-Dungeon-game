@@ -111,6 +111,12 @@ public class GameMaster {
         }
     }
 
+    public void updateCollectibles() {
+        // Would check if the player is intersecting with the Treaure Box
+        currRoom.resolveCollectibles(player);
+    }
+
+
 
     public void render(){
         if (currRoom instanceof BattleRoom) {

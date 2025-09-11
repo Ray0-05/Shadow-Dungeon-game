@@ -1,5 +1,6 @@
 import bagel.util.Point;
 
+import java.util.ArrayList;
 import java.util.Properties;
 
 public abstract class BattleRoom extends Room {
@@ -68,6 +69,20 @@ public abstract class BattleRoom extends Room {
             }
         }
     }
+    @Override
+    public void resolveCollectibles(Player player) {
+        if (objects == null) return;
+
+        for (GameObject obj : objects) {
+            if (obj instanceof TreasureBox) {
+                TreasureBox t = (TreasureBox) obj;
+                if (!t.isCollected() && player.getBoundingBox().intersects(t.getBoundingBox())) {
+                    t.collect(player); // grants coins + hides itself
+                }
+            }
+        }
+    }
+
 
 
 
@@ -95,45 +110,64 @@ public abstract class BattleRoom extends Room {
         }
     }
 
-    protected void initialiseBattleRoom(Properties gameProps, String labelOfRoom){
-        // Read optional walls list from properties (semicolon-separated x,y pairs)
-        String wallsCoordsRaw = gameProps.getProperty("wall."+ labelOfRoom);
-        Point[] wallCoords = IOUtils.parsePointList(wallsCoordsRaw);
+    // --- Initialisation of BattleRoom Specific stufss ---
+    protected void initialiseBattleRoom(Properties p, String room) {
+        Point[] walls   = IOUtils.parsePointList(p.getProperty("wall." + room));
+        Point[] rivers  = IOUtils.parsePointList(p.getProperty("river." + room));
+        Point[] enemies = IOUtils.parsePointList(p.getProperty("keyBulletKin." + room));
 
-        // Read optional Water list from properties
-        String riverTilesCoordsRaw = gameProps.getProperty("river." + labelOfRoom);
-        Point[] riverTilesCoords = IOUtils.parsePointList(riverTilesCoordsRaw);
-        double riverDamagePerFrame = Double.parseDouble(gameProps.getProperty("riverDamagePerFrame"));
-
-        // Read in Enemies
-        Enemy[] enemies = buildKeyBulletKinList(IOUtils.parsePointList(gameProps.getProperty("keyBulletKin." +
-                ""+labelOfRoom)));
-
-        // Initialise the game objects
-        GameObject[] objs = new GameObject[wallCoords.length + riverTilesCoords.length];
-        // Add each wall into the Room object list
-        for (int i = 0; i < wallCoords.length; i++) {
-            objs[i] = new Wall(wallCoords[i]);
-        }
-        // Add each river into the Room object list
-        for (int i = wallCoords.length; i < wallCoords.length + riverTilesCoords.length; i++){
-            objs[i]= new River(riverTilesCoords[i], riverDamagePerFrame);
+        Double riverDpf = parseDouble(p.getProperty("riverDamagePerFrame"));
+        if (rivers.length > 0 && riverDpf == null) {
+            throw new IllegalStateException("Missing riverDamagePerFrame for room: " + room);
         }
 
-        // Initialise BattleRoom specific displays and attributes
-        setDoors(new Door[] {new Door(gameProps.getProperty("primarydoor." + labelOfRoom)),
-                new Door(gameProps.getProperty("secondarydoor." + labelOfRoom))});
-        setObjects(objs);
-        setEnemies(enemies);
+        ArrayList<GameObject> objs = new ArrayList<>();
+        for (Point pt : walls)  objs.add(new Wall(pt));
+        for (Point pt : rivers) objs.add(new River(pt, riverDpf));        // safe: checked above
+        for (TreasureBox t : parseTreasureBoxes(p.getProperty("treasurebox." + room))) objs.add(t);
+
+        setDoors(parseDoors(p, room));
+        setObjects(objs.toArray(new GameObject[0]));
+        setEnemies(buildKeyBulletKinList(enemies));
     }
 
-    private KeyBulletKin[] buildKeyBulletKinList(Point[] coordinates){
-        KeyBulletKin[] KeyBulletKins = new KeyBulletKin[coordinates.length];
-        int i = 0;
-        for (Point coordinate : coordinates){
-            KeyBulletKins[i++] = new KeyBulletKin(coordinate);
-        }
-
-        return KeyBulletKins;
+    // --- Helpers (small) ---
+    private Double parseDouble(String s) {
+        if (s == null || s.isBlank()) return null;
+        try { return Double.parseDouble(s.trim()); } catch (NumberFormatException e) { return null; }
     }
+
+    private TreasureBox[] parseTreasureBoxes(String raw) {
+        if (raw == null || raw.isBlank() || raw.equals("0")) return new TreasureBox[0];
+        String[] entries = raw.split(";");
+        ArrayList<TreasureBox> out = new ArrayList<>(entries.length);
+        for (String e : entries) {
+            String[] p = e.trim().split(",");
+            if (p.length < 3) continue;
+            try {
+                double x = Double.parseDouble(p[0].trim());
+                double y = Double.parseDouble(p[1].trim());
+                int coins = Integer.parseInt(p[2].trim());
+                out.add(new TreasureBox(new Point(x, y), coins));
+            } catch (NumberFormatException ignore) { /* skip malformed */ }
+        }
+        return out.toArray(new TreasureBox[0]);
+    }
+
+    private Door[] parseDoors(Properties p, String room) {
+        ArrayList<Door> ds = new ArrayList<>(2);
+        String a = p.getProperty("primarydoor." + room);
+        String b = p.getProperty("secondarydoor." + room);
+        if (a != null && !a.isBlank()) ds.add(new Door(a));
+        if (b != null && !b.isBlank()) ds.add(new Door(b));
+        return ds.toArray(new Door[0]);
+    }
+
+    private KeyBulletKin[] buildKeyBulletKinList(Point[] pts) {
+        if (pts == null || pts.length == 0) return new KeyBulletKin[0];
+        KeyBulletKin[] arr = new KeyBulletKin[pts.length];
+        for (int i = 0; i < pts.length; i++) arr[i] = new KeyBulletKin(pts[i]);
+        return arr;
+    }
+
 }

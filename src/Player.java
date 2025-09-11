@@ -145,6 +145,14 @@ public class Player extends GameObject{
         return isAlive;
     }
 
+    public int getCoins() { return coin; }
+
+    public void addCoins(int amount) {
+        if (amount <= 0) return;
+        this.coin += amount;
+    }
+
+
     /* Method for rendering the player */
     public void render(){
         updateBoundingBox();

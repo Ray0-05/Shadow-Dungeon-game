@@ -58,6 +58,11 @@ public abstract class Room {
     public void resolveHazards(Player player) {
         // no-op
     }
+    /* Non-battle rooms have no collectibles by default. */
+    public void resolveCollectibles(Player player) {
+        // no-op
+    }
+
 
     /* Renders a general room (non battle) display's and attribute */
     public void render(){

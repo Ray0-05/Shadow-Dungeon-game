@@ -11,7 +11,7 @@ public class GameMaster {
     private final Properties msgProps;
     private Room currRoom;
     private PrepRoom prepRoom;
-    private BattleRoomA batteRoomA;
+    private BattleRoomA battleRoomA;
     private Room battleRoomB;
     private Room endRoom;
 
@@ -22,7 +22,8 @@ public class GameMaster {
         this.player = new Player(gameProps, msgProps);
 
         this.prepRoom = new PrepRoom(gameProps, msgProps, PREPROOM_STR);
-        this.batteRoomA = new BattleRoomA(gameProps, BATTLE_ROOM_A);
+        this.battleRoomA = new BattleRoomA(gameProps, BATTLE_ROOM_A);
+        this.battleRoomB = new BattleRoomB(gameProps, BATTLE_ROOM_B);
 
         this.currRoom = this.prepRoom;
         this.gameProps = gameProps;
@@ -53,9 +54,9 @@ public class GameMaster {
             if (destinationRoomStr.equals(PREPROOM_STR)){
                 enteringRoom = prepRoom;
             }else if (destinationRoomStr.equals(BATTLE_ROOM_A)){
-                enteringRoom = batteRoomA;
+                enteringRoom = battleRoomA;
             }else if (destinationRoomStr.equals(BATTLE_ROOM_B)){
-
+                enteringRoom = battleRoomB;
             }else if (destinationRoomStr.equals(END_ROOM)){
 
             }else{

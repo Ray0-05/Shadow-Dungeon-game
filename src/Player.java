@@ -2,6 +2,7 @@ import bagel.Font;
 import bagel.Image;
 import bagel.util.Point;
 import bagel.util.Rectangle;
+import org.lwjgl.system.windows.MSG;
 
 import java.util.Properties;
 
@@ -11,9 +12,11 @@ public class Player {
     // Defining left and right facing image of the player, and also its bounding box
     private final Image LEFT_DIRECTION = new Image("res/player_left.png");
     private final Image RIGHT_DIRIECTION = new Image("res/player_right.png");
-    private final Rectangle BINDING_BOX = LEFT_DIRECTION.getBoundingBox();
     // Player's Speed
     private final double SPEED;
+    // Player's maximum Xand Y coordinates
+    private final double MAX_XCOORDINATE;
+    private final double MAX_YCOORDINATE;
 
     /*----------------------------------ATTRIBUTES ---------------------------*/
     
@@ -21,8 +24,7 @@ public class Player {
      * is initialised by calling the constructor */
     private Image currDirection = RIGHT_DIRIECTION;
     private Point coordinate;
-    private double xCoordinate;
-    private double yCoordinate;
+    private  Rectangle playerBoundingBox;
     
     /* Predefining player's starting stats properties */
     private double health = 100;
@@ -41,10 +43,12 @@ public class Player {
     /* Construct the player with its starting 
     * location, movement speed, and Health and Coin Display gathered from gameProps*/
     public Player(Properties gameProps, Properties msgProps){
+        this.MAX_XCOORDINATE = Double.parseDouble(gameProps.getProperty("window.width"));
+        this.MAX_YCOORDINATE = Double.parseDouble(gameProps.getProperty("window.height"));
+
+        coordinate = IOUtils.parseCoords(gameProps.getProperty("player.start"));
         this.SPEED = Double.parseDouble(gameProps.getProperty("movingSpeed"));
-        this.coordinate = IOUtils.parseCoords(gameProps.getProperty("player.start"));
-        this.xCoordinate = coordinate.x;
-        this.yCoordinate = coordinate.y;
+        playerBoundingBox = LEFT_DIRECTION.getBoundingBoxAt(coordinate);
 
         /* Initialising the Font, Coordinates, Display Names for player stats display */
         PLAYER_STATS_FONT = new Font(gameProps.getProperty("font"),Integer.parseInt(gameProps.getProperty("playerStats.fontSize")));
@@ -54,52 +58,65 @@ public class Player {
         COIN_DISPLAY = msgProps.getProperty("coinDisplay");
     }
 
-    public Image getCurrDirection() {
-        return currDirection;
+    /* ------------Method for checking if the player is entering a new room ---------*/
+    /* returns the specific room string its entering if there's any,
+    and returns null if its not entering a new room */
+    public String isEnteringNewRoom(Door[] doors){
+        for (Door door: doors){
+            if (!door.getIsLocked() && this.playerBoundingBox.intersects(door.getBoundingBox())) {
+                return door.accessToRoom();
+            }
+        }
+        return null;
     }
 
-    public void setCurrDirection(Image currDirection) {
-        this.currDirection = currDirection;
-    }
+    /* -------------Method for teleporting the player to another location -------------*/
 
-    /* ----------------Different methods for getting different coordinates------------ */
-
-    public Point getCoordinate() {
-        return coordinate;
-    }
-
-    public double getCoordinateX(){
-        return xCoordinate;
-    }
-
-    public double getCoordinateY(){
-        return yCoordinate;
-    }
-
-    public void setCoordinate(Point coordinate) {
+    public void teleportTo(Point coordinate){
         this.coordinate = coordinate;
-        this.xCoordinate = coordinate.x;
-        this.yCoordinate = coordinate.y;
     }
 
     /* ------------Methods for moving RIGHT, LEFT, UP, DOWN --------------- */
 
     public void moveRight(){
-        xCoordinate += SPEED;
+        if(this.isWithinBound(coordinate.x + SPEED, coordinate.y)){
+            updateCoordinateX(coordinate.x + SPEED);
+        }
     }
     public void moveLeft(){
-        xCoordinate -= SPEED;
+        if(this.isWithinBound(coordinate.x - SPEED, coordinate.y)){
+            updateCoordinateX(coordinate.x - SPEED);
+        }
     }
     public void moveUp(){
-        yCoordinate -= SPEED;
+        if (this.isWithinBound(coordinate.x, coordinate.y - SPEED)){
+            updateCoordinateY(coordinate.y - SPEED);
+        }
     }
     public void moveDown(){
-        yCoordinate += SPEED;
+        if (this.isWithinBound(coordinate.x, coordinate.y + SPEED)){
+            updateCoordinateY(coordinate.y + SPEED);
+        }
     }
+
+    /* ------------------helper functions for moving----------------*/
+    private void updateCoordinateX(double x){
+        this.coordinate = new Point(x, coordinate.y);
+    }
+    private void updateCoordinateY(double y){
+        this.coordinate = new Point(coordinate.x, y);
+    }
+    public boolean isWithinBound(double xCoordinate, double yCoordinate){
+        if (xCoordinate - SPEED < 0 | xCoordinate > MAX_XCOORDINATE |
+                yCoordinate < 0 | yCoordinate > MAX_YCOORDINATE) return false;
+        return true;
+    }
+
     /* Method for rendering the player (called in Shadowdungeon update() */
 
     public void render(){
-        currDirection.draw(xCoordinate, yCoordinate);
+        playerBoundingBox = LEFT_DIRECTION.getBoundingBoxAt(coordinate);
+        currDirection.draw(coordinate.x, coordinate.y);
         PLAYER_STATS_FONT.drawString(HEALTH_DISPLAY + ' ' + health, HEALTH_STAT_COORD.x, HEALTH_STAT_COORD.y);
         PLAYER_STATS_FONT.drawString(COIN_DISPLAY +  ' ' + coin, COIN_STAT_COORD.x, COIN_STAT_COORD.y);
     }

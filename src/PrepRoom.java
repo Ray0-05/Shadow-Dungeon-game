@@ -22,9 +22,9 @@ public class PrepRoom extends Room {
 
 
 
-    public PrepRoom(Properties gameProps, Properties msgProps){
+    public PrepRoom(Properties gameProps, Properties msgProps, String nameLabel){
         // Initialise the basic Display and attributes of a room
-        super(gameProps);
+        super(gameProps, nameLabel);
 
         // Initialise PrepRoom specific displays and attributes
         TITLE = msgProps.getProperty("title");

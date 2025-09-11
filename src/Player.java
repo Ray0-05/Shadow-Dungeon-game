@@ -1,15 +1,17 @@
 import bagel.Font;
 import bagel.Image;
 import bagel.util.Point;
+import bagel.util.Rectangle;
 
 import java.util.Properties;
 
 public class Player {
     /*-----------------------------------CONSTANTS--------------------------*/
     
-    // Defining left and right facing image of the player
-    private final Image leftDirection = new Image("res/player_left.png");
-    private final Image rightDirection = new Image("res/player_right.png");
+    // Defining left and right facing image of the player, and also its bounding box
+    private final Image LEFT_DIRECTION = new Image("res/player_left.png");
+    private final Image RIGHT_DIRIECTION = new Image("res/player_right.png");
+    private final Rectangle BINDING_BOX = LEFT_DIRECTION.getBoundingBox();
     // Player's Speed
     private final double SPEED;
 
@@ -17,7 +19,7 @@ public class Player {
     
     /* Player starts by facing right and the starting coordinate
      * is initialised by calling the constructor */
-    private Image currDirection = rightDirection;
+    private Image currDirection = RIGHT_DIRIECTION;
     private Point coordinate;
     private double xCoordinate;
     private double yCoordinate;
@@ -98,8 +100,8 @@ public class Player {
 
     public void render(){
         currDirection.draw(xCoordinate, yCoordinate);
-        PLAYER_STATS_FONT.drawString(HEALTH_DISPLAY, HEALTH_STAT_COORD.x, HEALTH_STAT_COORD.y);
-        PLAYER_STATS_FONT.drawString(COIN_DISPLAY, COIN_STAT_COORD.x, COIN_STAT_COORD.y);
+        PLAYER_STATS_FONT.drawString(HEALTH_DISPLAY + ' ' + health, HEALTH_STAT_COORD.x, HEALTH_STAT_COORD.y);
+        PLAYER_STATS_FONT.drawString(COIN_DISPLAY +  ' ' + coin, COIN_STAT_COORD.x, COIN_STAT_COORD.y);
     }
 
 }

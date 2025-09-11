@@ -56,7 +56,7 @@ public class ShadowDungeon extends AbstractGame {
         // 4) Resolve room transitions after movement
         gameMaster.checkIfChangeRoom();
 
-        // 5) render the current room + player
+        // 5) render the current room status + player
         gameMaster.render();
     }
 

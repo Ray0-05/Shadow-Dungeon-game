@@ -14,8 +14,6 @@ public abstract class Room {
 
 
     private Door[] doors;  // Doors in this Room, defined in the child class
-    private GameObject[] objects;  // walls, water, treasures, etc.
-    protected boolean hasBoss = false;
 
     /* Initialise the Room Standard Font*/
     public Room(Properties gameProps, String nameLabel){
@@ -31,38 +29,48 @@ public abstract class Room {
         return doors;
     }
 
-    public GameObject[] getObjects() {
-        return objects;
-    }
-
-    public boolean hasBoss() {
-        return hasBoss;
+    public void setDoors(Door[] doors) {
+        this.doors = doors;
     }
 
     public String getNAME_LABEL() {
         return NAME_LABEL;
     }
 
-    public void setDoors(Door[] doors) {
-        this.doors = doors;
+    /* -------Base Methods for subclasses (battle rooms override these) ----------- */
+
+    // Subclasses can return collidable  objects (e.g., walls). Base room: none.
+    protected GameObject[] getCollidableObjects() {
+        return new GameObject[0];
     }
 
-    public void setObjects(GameObject[] objects) {
-        this.objects = objects;
+    // Subclasses can resolve enemy touches (touch-to-kill). Base room: no-op.
+    public void resolveEnemyTouches(Player player) {
+        // no enemies in non-battle rooms
     }
 
-    public void setHasBoss(boolean hasBoss) {
-        this.hasBoss = hasBoss;
+    // Are there any enemy gating doors? Base room: no.
+    public boolean hasEnemy() {
+        return false;
     }
 
-    /* Returns a Font where its style is constant with all the Rooms,
-         but with specified size (input) */
+    /* Renders a general room (non battle) display's and attribute */
+    public void render(){
+        BACKGROUND_IMAGE.drawFromTopLeft(0, 0);
+        for (Door door : doors){
+            door.render();
+        }
+    }
+
+    /* -----------------Default Methods to be used by any Room ----------------*/
+
+    /* Returns a Font where its style is constant with
+    all the Rooms, but with specified size (input) */
     protected Font getGameFontOfSize(String sizeStr){
         return new Font(GAME_FONT_FILEPATH, Integer.parseInt(sizeStr));
     }
-
-    /* ------A method to get the desired Door by specifying
-                the room that the door have access to----------*/
+    /* A method to get the desired Door by specifying
+       the room that the door have access to*/
     protected Door findDoorTo(String destinationRoom){
         for (Door door : doors){
             if (door.getNextRoom().equals(destinationRoom)){
@@ -71,7 +79,6 @@ public abstract class Room {
         }
         return null;
     }
-
 
     @Override
     public boolean equals(Object o){
@@ -93,35 +100,28 @@ public abstract class Room {
         }
     }
 
+    // A method to check if a new place can be moved to(whether its collidingwith concrete objects)
     public boolean canMoveTo(Rectangle newBoundingBox) {
-        // Check doors first
-        for (Door door : doors) {
-            if (newBoundingBox.intersects(door.getBoundingBox()) && !door.isOverlappable()) {
-                return false; // blocked by closed/locked door
-            }
-        }
-        // Check other objects
-        if (objects != null) {
-            for (GameObject obj : objects) {
-                if (newBoundingBox.intersects(obj.getBoundingBox()) && !obj.isOverlappable()) {
-                    return false; // blocked by wall or other solid object
+        // Doors: block if non-overlappable
+        if (doors != null) {
+            for (Door door : doors) {
+                if (newBoundingBox.intersects(door.getBoundingBox()) && !door.isOverlappable()) {
+                    return false;
                 }
             }
         }
-        return true; // free to move
-    }
-
-
-    /* Renders a general room display's and attribute */
-    public void render(){
-        BACKGROUND_IMAGE.drawFromTopLeft(0,0);
-        if (objects != null) {
-            for (GameObject obj : objects) {
-                obj.render();
+        // Collidable objects come from subclass
+        GameObject[] collidables = getCollidableObjects();
+        if (collidables != null) {
+            for (GameObject obj : collidables) {
+                if (newBoundingBox.intersects(obj.getBoundingBox()) && !obj.isOverlappable()) {
+                    return false;
+                }
             }
         }
-        for (Door door : doors){
-            door.render();
-        }
+        return true;
     }
+
+
+
 }

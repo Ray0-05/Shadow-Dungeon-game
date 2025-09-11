@@ -1,5 +1,3 @@
-import bagel.util.Point;
-
 import java.util.Properties;
 
 public class GameMaster {
@@ -76,7 +74,7 @@ public class GameMaster {
             // Identify and configure the entry door (the one that links back to prevRoomName)
             Door entryDoor = currRoom.findDoorTo(prevRoomName); // uses the helper we'll add in Room (Part 1 Edit 3)
             if (entryDoor != null) {
-                entryDoor.markAsEntryDoor(currRoom.hasBoss());  // open + ignore overlap; closes after stepping away if boss room
+                entryDoor.markAsEntryDoor(currRoom.hasEnemy());  // open + ignore overlap; closes after stepping away if boss room
             }
 
         }
@@ -107,7 +105,9 @@ public class GameMaster {
     }
 
     public void render(){
+        currRoom.resolveEnemyTouches(player); // Touch-to-kill + unlock-all-doors-when-clear
         currRoom.render();
         player.render();
     }
+
 }

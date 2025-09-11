@@ -21,7 +21,7 @@ public class Player {
     private double xCoordinate;
     private double yCoordinate;
     
-    /* Predefining player's starting properties */ 
+    /* Predefining player's starting stats properties */
     private double health = 100;
     private boolean isAlive = true;
     private int coin = 0;
@@ -45,7 +45,8 @@ public class Player {
         this.currDirection = currDirection;
     }
 
-    // Different methods for getting different coordinates
+    /* ----------------Different methods for getting different coordinates------------ */
+
     public Point getCoordinate() {
         return coordinate;
     }
@@ -64,7 +65,8 @@ public class Player {
         this.yCoordinate = coordinate.y;
     }
 
-    /* Methods for moving RIGHT, LEFT, UP, DOWN */
+    /* ------------Methods for moving RIGHT, LEFT, UP, DOWN --------------- */
+
     public void moveRight(){
         xCoordinate += SPEED;
     }
@@ -76,6 +78,11 @@ public class Player {
     }
     public void moveDown(){
         yCoordinate += SPEED;
+    }
+    /* Method for rendering the player (called in Shadowdungeon update() */
+
+    public void render(){
+        currDirection.draw(xCoordinate, yCoordinate);
     }
 
 }

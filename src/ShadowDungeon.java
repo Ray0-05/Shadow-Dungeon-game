@@ -19,7 +19,7 @@ public class ShadowDungeon extends AbstractGame {
         this.MESSAGE_PROPS = messageProps;
 
         // Initialise the player and current room(Prep room)
-        this.player = new Player(GAME_PROPS);
+        this.player = new Player(GAME_PROPS, MESSAGE_PROPS);
         this.currRoom = new PrepRoom(GAME_PROPS, MESSAGE_PROPS);
     }
 

@@ -1,3 +1,4 @@
+import bagel.Font;
 import bagel.Image;
 import bagel.util.Point;
 
@@ -26,15 +27,29 @@ public class Player {
     private boolean isAlive = true;
     private int coin = 0;
 
+    /* Player's Health and Coin display attributes */
+    protected final Point HEALTH_STAT_COORD;
+    protected final Point COIN_STAT_COORD;
+    protected final String HEALTH_DISPLAY;
+    protected final String COIN_DISPLAY;
+    protected final Font PLAYER_STATS_FONT;
+
 
 
     /* Construct the player with its starting 
-    * location and movement speed gathered from gameProps*/
-    public Player(Properties gameProps){
+    * location, movement speed, and Health and Coin Display gathered from gameProps*/
+    public Player(Properties gameProps, Properties msgProps){
         this.SPEED = Double.parseDouble(gameProps.getProperty("movingSpeed"));
         this.coordinate = IOUtils.parseCoords(gameProps.getProperty("player.start"));
         this.xCoordinate = coordinate.x;
         this.yCoordinate = coordinate.y;
+
+        /* Initialising the Font, Coordinates, Display Names for player stats display */
+        PLAYER_STATS_FONT = new Font(gameProps.getProperty("font"),Integer.parseInt(gameProps.getProperty("playerStats.fontSize")));
+        HEALTH_STAT_COORD = IOUtils.parseCoords(gameProps.getProperty("healthStat"));
+        COIN_STAT_COORD = IOUtils.parseCoords(gameProps.getProperty("coinStat"));
+        HEALTH_DISPLAY = msgProps.getProperty("healthDisplay");
+        COIN_DISPLAY = msgProps.getProperty("coinDisplay");
     }
 
     public Image getCurrDirection() {
@@ -83,6 +98,8 @@ public class Player {
 
     public void render(){
         currDirection.draw(xCoordinate, yCoordinate);
+        PLAYER_STATS_FONT.drawString(HEALTH_DISPLAY, HEALTH_STAT_COORD.x, HEALTH_STAT_COORD.y);
+        PLAYER_STATS_FONT.drawString(COIN_DISPLAY, COIN_STAT_COORD.x, COIN_STAT_COORD.y);
     }
 
 }

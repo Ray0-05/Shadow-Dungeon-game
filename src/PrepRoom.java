@@ -20,13 +20,11 @@ public class PrepRoom extends Room {
     private final Image RESTART_AREA = new Image("res/restart_area.png");
     private final Point RESTART_AREA_COORD;
 
-    // Door to Battle Room A
-    Door doorToBattleRoomA;
 
 
     public PrepRoom(Properties gameProps, Properties msgProps){
         // Initialise the basic Display and attributes of a room
-        super(gameProps, msgProps);
+        super(gameProps);
 
         // Initialise PrepRoom specific displays and attributes
         TITLE = msgProps.getProperty("title");

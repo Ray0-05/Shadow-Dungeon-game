@@ -3,19 +3,20 @@ import bagel.util.Point;
 import java.util.ArrayList;
 import java.util.Properties;
 
-public abstract class BattleRoom extends Room {
+public class BattleRoom extends Room {
     // World objects that affect movement/visuals (e.g., walls, water)
     protected GameObject[] objects = new GameObject[0];
-
     // Enemies (overlappable; die on touch; doors unlock when all dead)
     protected Enemy[] enemies = new Enemy[0];
+    // Enemies should only be active/visible after stepping off the entry door once
+    protected boolean encounterActive = false;
 
     public BattleRoom(Properties gameProps, String nameLabel) {
         super(gameProps, nameLabel);
         initialiseBattleRoom(gameProps, nameLabel);
     }
 
-    // ---- Getters & Setters ----
+    // ------------------------------- Getters & Setters -----------------------
     public void setObjects(GameObject[] objects) {
         this.objects = (objects != null) ? objects : new GameObject[0];
     }
@@ -24,9 +25,11 @@ public abstract class BattleRoom extends Room {
     public void setEnemies(Enemy[] enemies) {
         this.enemies = (enemies != null) ? enemies : new Enemy[0];
     }
-    public Enemy[] getEnemies() { return enemies; }
 
-    // ---- Overriding the general room implementation ----
+    public void setEncounterActive(boolean active) { this.encounterActive = active; }
+    public boolean isEncounterActive() { return encounterActive; }
+
+    // -------------- Overriding the general room implementation ---------------
     @Override
     protected GameObject[] getCollidableObjects() {
         return objects;
@@ -42,8 +45,22 @@ public abstract class BattleRoom extends Room {
     }
 
     @Override
+    public void updateEncounterActivation(Player player) {
+        if (!encounterActive && entryDoor != null) {
+            // When player is no longer inside the entry door's bbox, activate the encounter
+            if (!entryDoor.isPlayerInside(player)) {
+                encounterActive = true;
+            }
+        }
+    }
+
+
+
+    @Override
     public void resolveEnemyTouches(Player player) {
+        if (!encounterActive) return;
         if (enemies == null) return;
+
         boolean anyKilled = false;
         for (Enemy e : enemies) {
             if (e != null && !e.isDefeated()
@@ -97,8 +114,8 @@ public abstract class BattleRoom extends Room {
             for (GameObject obj : objects) obj.render();
         }
 
-        // Enemies (alive ones only)
-        if (enemies != null) {
+        // Only draw enemies AFTER the player has stepped off the entry door, and is not defeated
+        if (encounterActive && enemies != null) {
             for (Enemy e : enemies) {
                 if (!e.isDefeated()) e.render();
             }

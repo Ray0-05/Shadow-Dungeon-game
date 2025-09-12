@@ -1,3 +1,6 @@
+import bagel.util.Point;
+
+import java.awt.*;
 import java.util.Properties;
 
 public class GameMaster {
@@ -11,9 +14,8 @@ public class GameMaster {
     private final Properties msgProps;
     private Room currRoom;
     private PrepRoom prepRoom;
-    private BattleRoomA battleRoomA;
-    private BattleRoomB battleRoomB;
-    private EndRoom endRoom;
+    private BattleRoom battleRoomA;
+    private BattleRoom battleRoomB;
 
     private Player player;
 
@@ -22,8 +24,8 @@ public class GameMaster {
         this.player = new Player(gameProps, msgProps);
 
         this.prepRoom = new PrepRoom(gameProps, msgProps, PREPROOM_STR);
-        this.battleRoomA = new BattleRoomA(gameProps, BATTLE_ROOM_A);
-        this.battleRoomB = new BattleRoomB(gameProps, BATTLE_ROOM_B);
+        this.battleRoomA = new BattleRoom(gameProps, BATTLE_ROOM_A);
+        this.battleRoomB = new BattleRoom(gameProps, BATTLE_ROOM_B);
 
         this.currRoom = this.prepRoom;
         this.gameProps = gameProps;
@@ -31,7 +33,6 @@ public class GameMaster {
     }
     /* -------------Methods below is for moving players around-------------*/
     public void movePlayerRight(){
-//        if(player.isOverlappingWith())
         player.moveRight(currRoom);
     }
     public void movePlayerLeft(){
@@ -44,42 +45,45 @@ public class GameMaster {
         player.moveDown(currRoom);
     }
 
-    public void checkIfChangeRoom(){
+    public void checkIfChangeRoom() {
         String destinationRoomStr = player.isEnteringNewRoom(currRoom.getDoors());
-        Room enteringRoom = null;
+        if (destinationRoomStr == null) return;
 
-        // Check if we need to change room
-        if (destinationRoomStr != null){
-
-            if (destinationRoomStr.equals(PREPROOM_STR)){
-                enteringRoom = prepRoom;
-            }else if (destinationRoomStr.equals(BATTLE_ROOM_A)){
-                enteringRoom = battleRoomA;
-            }else if (destinationRoomStr.equals(BATTLE_ROOM_B)){
-                enteringRoom = battleRoomB;
-            }else if (destinationRoomStr.equals(END_ROOM)){
-                enteringRoom = new EndRoom(gameProps, msgProps, END_ROOM,true);
-            }else{
-                System.out.println("When changing Room, the destinationRoomStr (defined in app.properties under doors) " +
-                        "does not match the symbols of each room defined in the program");
+        Room enteringRoom = switch (destinationRoomStr) {
+            case PREPROOM_STR -> prepRoom;
+            case BATTLE_ROOM_A -> battleRoomA;
+            case BATTLE_ROOM_B -> battleRoomB;
+            case END_ROOM      -> new EndRoom(gameProps, msgProps, END_ROOM, true); // win state
+            default -> {
+                System.out.println("Door destination doesn't match any known room symbol.");
                 System.exit(1);
+                yield null; // unreachable
             }
-            // Find the linking door in new room
-            String prevRoomName = currRoom.getNAME_LABEL();
-            Door newRoomLinkingDoor = enteringRoom.findDoorTo(prevRoomName);
+        };
 
-            // Teleport to new room
-            currRoom = enteringRoom;
-            player.teleportTo(newRoomLinkingDoor.getCoordinate());
+        String prevRoomName = currRoom.getNAME_LABEL();
 
-            // Identify and configure the entry door (the one that links back to prevRoomName)
-            Door entryDoor = currRoom.findDoorTo(prevRoomName); // uses the helper we'll add in Room (Part 1 Edit 3)
-            if (entryDoor != null) {
-                entryDoor.markAsEntryDoor(currRoom.hasEnemy());  // open + ignore overlap; closes after stepping away if boss room
-            }
+        // Find the linking door IN THE NEW ROOM
+        Door entry = enteringRoom.findDoorTo(prevRoomName);
+        if (entry == null) {
+            System.out.println("No linking door back to " + prevRoomName + " in new room!");
+            return;
+        }
 
+        // Switch to the new room and configure its entry door
+        currRoom = enteringRoom;
+        currRoom.setEntryDoor(entry);
+        entry.markAsEntryDoor(currRoom instanceof BattleRoom && ((BattleRoom) currRoom).hasEnemy());
+
+        // Spawn the player inside the door (centre so we truly overlap)
+        player.teleportTo(entry.getBoundingBox().centre());
+
+        // Battle rooms: enemies hidden/inactive until player step off once
+        if (currRoom instanceof BattleRoom br) {
+            br.setEncounterActive(false);
         }
     }
+
 
     public boolean canTypeRToUnlockDoor(){
         if (currRoom.equals(prepRoom)){
@@ -122,6 +126,7 @@ public class GameMaster {
     public void render(){
         if (currRoom instanceof BattleRoom) {
             //only render this if its relevant
+            currRoom.updateEncounterActivation(player);
             currRoom.resolveEnemyTouches(player); // Touch-to-kill + unlock-all-doors-when-clear
             updateHazards();
         }

@@ -7,7 +7,6 @@ public class ShadowDungeon extends AbstractGame {
     private final Properties GAME_PROPS;
     private final Properties MESSAGE_PROPS;
 
-
     private GameMaster gameMaster;
 
 
@@ -45,7 +44,7 @@ public class ShadowDungeon extends AbstractGame {
             gameMaster.movePlayerDown();
         }
 
-        // 3) Direction of Player
+        // 3) Update direction of Player
         gameMaster.updatePlayerFacingByMouseX(input.getMouseX());
 
 

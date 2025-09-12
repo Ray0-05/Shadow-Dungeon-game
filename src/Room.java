@@ -14,6 +14,8 @@ public abstract class Room {
 
 
     private Door[] doors;  // Doors in this Room, defined in the child class
+    // Which door we used to spawn into this room (set by GameMaster on entry)
+    protected Door entryDoor = null;
 
     /* Initialise the Room Standard Font*/
     public Room(Properties gameProps, String nameLabel){
@@ -36,6 +38,11 @@ public abstract class Room {
     public String getNAME_LABEL() {
         return NAME_LABEL;
     }
+
+    public void setEntryDoor(Door door) { this.entryDoor = door; }
+
+    public Door getEntryDoor() { return entryDoor; }
+
 
     /* -------Base Methods for subclasses (battle rooms override these) ----------- */
 
@@ -74,6 +81,11 @@ public abstract class Room {
 
     public Rectangle retrieveRestartAreaBox(){
         return null;
+    }
+
+    /* Base rooms have no encounter activation logic; BattleRoom will override. */
+    public void updateEncounterActivation(Player player) {
+        // no-op
     }
 
     /* -----------------Default Methods to be used by any Room ----------------*/

@@ -2,7 +2,6 @@ import bagel.Font;
 import bagel.Image;
 import bagel.util.Point;
 import bagel.util.Rectangle;
-import bagel.Input;
 
 import java.util.Locale;
 import java.util.Properties;
@@ -81,6 +80,7 @@ public class Player extends GameObject{
 
     public void teleportTo(Point coordinate){
         this.coordinate = coordinate;
+        updateBoundingBox();
     }
 
     /* ------------Methods for moving RIGHT, LEFT, UP, DOWN --------------- */

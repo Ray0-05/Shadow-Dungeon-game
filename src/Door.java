@@ -25,7 +25,7 @@ public class Door extends GameObject{
     }
 
     public boolean isPlayerInside(Player player) {
-        return player.getBoundingBox().intersects(this.getBoundingBox());
+        return this.getBoundingBox().intersects(player.getBoundingBox());
     }
 
     public void unlock(){

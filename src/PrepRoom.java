@@ -1,6 +1,5 @@
 import java.util.Properties;
 import bagel.Font;
-import bagel.Image;
 import bagel.util.Point;
 import bagel.util.Rectangle;
 

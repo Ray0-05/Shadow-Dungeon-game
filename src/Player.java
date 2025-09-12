@@ -89,7 +89,7 @@ public class Player extends GameObject{
         Point newPos = new Point(this.coordinate.x + SPEED, this.coordinate.y);
         Rectangle newBox = sprite.getBoundingBoxAt(newPos);
 
-        if (room.canMoveTo(newBox) && isWithinBound(newPos.x, newPos.y)) {
+        if (room.canMoveTo(newBox) && isWithinBound(newBox)) {
             this.coordinate = newPos;
             updateBoundingBox();
         }
@@ -99,7 +99,7 @@ public class Player extends GameObject{
         Point newPos = new Point(this.coordinate.x - SPEED, this.coordinate.y);
         Rectangle newBox = sprite.getBoundingBoxAt(newPos);
 
-        if (room.canMoveTo(newBox) && isWithinBound(newPos.x, newPos.y)) {
+        if (room.canMoveTo(newBox) && isWithinBound(newBox)) {
             this.coordinate = newPos;
             updateBoundingBox();
         }
@@ -108,7 +108,7 @@ public class Player extends GameObject{
         Point newPos = new Point(this.coordinate.x, this.coordinate.y - SPEED);
         Rectangle newBox = sprite.getBoundingBoxAt(newPos);
 
-        if (room.canMoveTo(newBox) && isWithinBound(newPos.x, newPos.y)) {
+        if (room.canMoveTo(newBox) && isWithinBound(newBox)) {
             this.coordinate = newPos;
             updateBoundingBox();
         }
@@ -117,7 +117,7 @@ public class Player extends GameObject{
         Point newPos = new Point(this.coordinate.x, this.coordinate.y + SPEED);
         Rectangle newBox = sprite.getBoundingBoxAt(newPos);
 
-        if (room.canMoveTo(newBox) && isWithinBound(newPos.x, newPos.y)) {
+        if (room.canMoveTo(newBox) && isWithinBound(newBox)) {
             this.coordinate = newPos;
             updateBoundingBox();
         }
@@ -125,9 +125,16 @@ public class Player extends GameObject{
 
     /* ------------------helper functions for moving----------------*/
 
-    private boolean isWithinBound(double x, double y){
-        return x >= 0 && x <= MAX_XCOORDINATE
-                && y >= 0 && y <= MAX_YCOORDINATE;
+    private boolean isWithinBound(Rectangle box){
+        double left   = box.left();
+        double right  = box.right();
+        double top    = box.top();
+        double bottom = box.bottom();
+
+        return left >= 0
+                && right <= MAX_XCOORDINATE
+                && top >= 0
+                && bottom <= MAX_YCOORDINATE;
     }
 
 

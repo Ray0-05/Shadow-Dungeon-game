@@ -1,11 +1,13 @@
 import bagel.Image;
+import bagel.Window;
 import bagel.util.Point;
+import bagel.util.Rectangle;
 import bagel.util.Vector2;
 
 public class Projectiles extends GameObject implements CollidableWithPlayer{
     private final double speed;
     private int damage;
-    private boolean active;
+    private boolean destroyed;
     private final int coolDownFreq;
     private Vector2 velocity;
     private Vector2 position;
@@ -32,7 +34,6 @@ public class Projectiles extends GameObject implements CollidableWithPlayer{
     }
 
 
-
     public int getDamage() {
         return damage;
     }
@@ -41,12 +42,12 @@ public class Projectiles extends GameObject implements CollidableWithPlayer{
         this.damage = damage;
     }
 
-    public boolean isActive() {
-        return active;
+    public boolean isDestroyed() {
+        return destroyed;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public void setDestroyed(boolean destroyed) {
+        this.destroyed = destroyed;
     }
 
     public int getCoolDownFreq() {

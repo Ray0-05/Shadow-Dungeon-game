@@ -16,6 +16,8 @@ public class Player {
     private double coins = 0;
     private boolean faceLeft = false;
     private boolean canShoot = false;
+    private final static int shootCooldown = Integer.parseInt(ShadowDungeon.getGameProps().getProperty("bulletFreq"));
+    private int lastShotInterval = shootCooldown; // assuming the player can immediately shoot when spawn
 
     public Player(Point position) {
         this.position = position;
@@ -51,6 +53,11 @@ public class Player {
         Point bottomRight = rect.bottomRight();
         if (topLeft.x >= 0 && bottomRight.x <= Window.getWidth() && topLeft.y >= 0 && bottomRight.y <= Window.getHeight()) {
             move(currX, currY);
+        }
+
+        // Keep track of the last shoot interval
+        if  (lastShotInterval < shootCooldown){
+            lastShotInterval++;
         }
     }
     
@@ -101,7 +108,8 @@ public class Player {
     }
 
     public Bullet shoot(Input input) {
-        if (input.wasPressed(MouseButtons.LEFT) && canShoot) {
+        if (input.wasPressed(MouseButtons.LEFT) && canShoot && lastShotInterval == shootCooldown) {
+            lastShotInterval = 0; // reset the shot timer
             Vector2 target = new Vector2(input.getMouseX(), input.getMouseY());
             return new Bullet(new Vector2(position.x, position.y), target);
         }

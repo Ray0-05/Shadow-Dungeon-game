@@ -1,6 +1,9 @@
 import bagel.Input;
+import bagel.Window;
+import bagel.util.Point;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Properties;
 
 public abstract class Room {
@@ -20,10 +23,22 @@ public abstract class Room {
             }
         }
 
-        for (Projectiles p: projectiles) {
+        Iterator<Projectiles> it = projectiles.iterator();
+        while (it.hasNext()) {
+            Projectiles p = it.next();
             p.update();
-            p.draw();
+
+            Point topLeft = p.getBoundingBox().topLeft();
+            Point bottomRight = p.getBoundingBox().bottomRight();
+
+            if (!(topLeft.x >= 0 && bottomRight.x <= Window.getWidth()
+                    && topLeft.y >= 0 && bottomRight.y <= Window.getHeight())) {
+                it.remove(); // remove if its out of bounds
+            } else {
+                p.draw();
+            }
         }
+
 
 
     }

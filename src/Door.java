@@ -1,12 +1,11 @@
 import bagel.Image;
 import bagel.util.Point;
+import jdk.jshell.execution.LocalExecutionControl;
 
 /**
  * Door which can be locked or unlocked, allows the player to move to the room it's connected to
  */
-public class Door {
-    private final Point position;
-    private Image image;
+public class Door extends GameObject implements CollidableWithPlayer{
     public final String toRoomName;
     public BattleRoom battleRoom; // only set if this door is inside a Battle Room
     private boolean unlocked = false;
@@ -17,14 +16,12 @@ public class Door {
     private static final Image UNLOCKED = new Image("res/unlocked_door.png");
 
     public Door(Point position, String toRoomName) {
-        this.position = position;
-        this.image = LOCKED;
+        super(position, LOCKED);
         this.toRoomName = toRoomName;
     }
 
     public Door(Point position, String toRoomName, BattleRoom battleRoom) {
-        this.position = position;
-        this.image = LOCKED;
+        super(position, LOCKED);
         this.toRoomName = toRoomName;
         this.battleRoom = battleRoom;
     }
@@ -37,19 +34,12 @@ public class Door {
         }
     }
 
-    public void draw() {
-        image.draw(position.x, position.y);
-    }
-
     public void unlock(boolean justEntered) {
         unlocked = true;
-        image = UNLOCKED;
+        super.setImage(UNLOCKED);
         this.justEntered = justEntered;
     }
-
-    public boolean hasCollidedWith(Player player) {
-        return image.getBoundingBoxAt(position).intersects(player.getCurrImage().getBoundingBoxAt(player.getPosition()));
-    }
+    
 
     private void onCollideWith(Player player) {
         // when the player only just entered this door's room, overlapping with the unlocked door shouldn't trigger room transition
@@ -69,7 +59,7 @@ public class Door {
             // Battle Room activation conditions
             if (shouldLockAgain && battleRoom != null && !battleRoom.isComplete()) {
                 unlocked = false;
-                image = LOCKED;
+                super.setImage(LOCKED);
                 battleRoom.activateEnemies();
             }
         }
@@ -77,7 +67,7 @@ public class Door {
 
     public void lock() {
         unlocked = false;
-        image = LOCKED;
+        super.setImage(LOCKED);
     }
 
     public boolean isUnlocked() {
@@ -89,6 +79,6 @@ public class Door {
     }
 
     public Point getPosition() {
-        return position;
+        return super.getPosition();
     }
 }

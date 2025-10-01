@@ -1,16 +1,12 @@
 import bagel.Image;
 import bagel.util.Point;
 
-public class MarineSprite{
-    private final Point position;
-    private final Image image;
+
+// A very simple class to print out the marine sprite for visualisation
+public class MarineSprite extends GameObject{
 
     public MarineSprite(Point position) {
-        this.position = position;
-        this.image = new Image("res/marine_sprite.png");
+        super(position, new Image("res/marine_sprite.png"));
     }
 
-    public void draw() {
-        image.draw(position.x, position.y);
-    }
 }

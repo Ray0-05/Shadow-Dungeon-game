@@ -4,13 +4,10 @@ import bagel.util.Point;
 /**
  * Obstacle that blocks the player from moving through it
  */
-public class Wall {
-    private final Point position;
-    private final Image image;
+public class Wall extends GameObject implements CollidableWithPlayer{
 
     public Wall(Point position) {
-        this.position = position;
-        this.image = new Image("res/wall.png");
+        super(position, new Image("res/wall.png"));
     }
 
     public void update(Player player) {
@@ -20,11 +17,4 @@ public class Wall {
         }
     }
 
-    public void draw() {
-        image.draw(position.x, position.y);
-    }
-
-    public boolean hasCollidedWith(Player player) {
-        return image.getBoundingBoxAt(position).intersects(player.getCurrImage().getBoundingBoxAt(player.getPosition()));
-    }
 }

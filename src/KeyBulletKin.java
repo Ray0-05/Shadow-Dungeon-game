@@ -4,15 +4,12 @@ import bagel.util.Point;
 /**
  * Enemy that gets removed when the player overlaps with it
  */
-public class KeyBulletKin {
-    private final Point position;
-    private final Image image;
+public class KeyBulletKin extends GameObject implements CollidableWithPlayer{
     private boolean active = false; // only true when the Battle Room has been activated
     private boolean dead = false;
     
     public KeyBulletKin(Point startPos) {
-        this.position = startPos;
-        this.image = new Image("res/key_bullet_kin.png");
+        super(startPos, new Image("res/key_bullet_kin.png"));
     }
 
     public void update(Player player) {
@@ -20,14 +17,6 @@ public class KeyBulletKin {
             dead = true;
             active = false;
         }
-    }
-
-    public void draw() {
-        image.draw(position.x, position.y);
-    }
-
-    public boolean hasCollidedWith(Player player) {
-        return image.getBoundingBoxAt(position).intersects(player.getCurrImage().getBoundingBoxAt(player.getPosition()));
     }
 
     public boolean isDead() {

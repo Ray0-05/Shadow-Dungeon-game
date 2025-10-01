@@ -18,7 +18,7 @@ public class ShadowDungeon extends AbstractGame {
     private static BattleRoom battleRoomB;
     private static EndRoom endRoom;
     private static Player player;
-    private final Image background;
+    private final Image BACKGROUND;
     
     public static final String PREP_ROOM_NAME = "prep";
     public static final String BATTLE_ROOM_A_NAME = "A";
@@ -34,7 +34,7 @@ public class ShadowDungeon extends AbstractGame {
         ShadowDungeon.messageProps = messageProps;
         screenWidth = Integer.parseInt(gameProps.getProperty("window.width"));
         screenHeight = Integer.parseInt(gameProps.getProperty("window.height"));
-        this.background = new Image("res/background.png");
+        this.BACKGROUND = new Image("res/background.png");
 
         resetGameState(gameProps);
     }
@@ -66,7 +66,7 @@ public class ShadowDungeon extends AbstractGame {
             Window.close();
         }
 
-        background.draw((double) Window.getWidth() / 2, (double) Window.getHeight() / 2);
+        BACKGROUND.draw((double) Window.getWidth() / 2, (double) Window.getHeight() / 2);
 
         switch (currRoomName) {
             case PREP_ROOM_NAME:
@@ -83,9 +83,9 @@ public class ShadowDungeon extends AbstractGame {
         }
     }
 
-    public static void changeRoom(String roomName) {
+    public static void changeRoom(String destRoomName) {
         Door nextDoor;
-        switch (roomName) {
+        switch (destRoomName) {
             case PREP_ROOM_NAME:
                 nextDoor = prepRoom.findDoorByDestination();
 

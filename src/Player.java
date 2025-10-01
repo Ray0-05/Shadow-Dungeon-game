@@ -8,18 +8,17 @@ import bagel.util.Rectangle;
 public class Player {
     private Point prevPosition;
     private Point position;
+    private Character character;
     private Image currImage;
     private double health;
-    private double speed;
+    private final double speed;
     private double coins = 0;
     private boolean faceLeft = false;
 
-    private static final Image RIGHT_IMAGE = new Image("res/player_right.png");
-    private static final Image LEFT_IMAGE = new Image("res/player_left.png");
-
     public Player(Point position) {
         this.position = position;
-        this.currImage = RIGHT_IMAGE;
+        this.character = Character.ORIGINAL;
+        this.currImage = character.getRightImage();
         this.speed = Double.parseDouble(ShadowDungeon.getGameProps().getProperty("movingSpeed"));
         this.health = Double.parseDouble(ShadowDungeon.getGameProps().getProperty("initialHealth"));
     }
@@ -59,7 +58,7 @@ public class Player {
     }
 
     public void draw() {
-        currImage = faceLeft ? LEFT_IMAGE : RIGHT_IMAGE; // NOTE: this is an example of using the ternary operator
+        currImage = faceLeft ? character.getLeftImage() : character.getRightImage(); // NOTE: this is an example of using the ternary operator
         currImage.draw(position.x, position.y);
         UserInterface.drawStats(health, coins);
     }
@@ -85,5 +84,14 @@ public class Player {
 
     public Point getPrevPosition() {
         return prevPosition;
+    }
+
+    public Character getCharacter() {
+        return character;
+    }
+
+    public void changeCharacter(Character newCharacter){
+        character = newCharacter;
+        currImage = newCharacter.getRightImage();
     }
 }

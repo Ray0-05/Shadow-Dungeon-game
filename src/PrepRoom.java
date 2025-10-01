@@ -11,6 +11,8 @@ public class PrepRoom {
     private Player player;
     private Door door;
     private RestartArea restartArea;
+    private RobotSprite robotSprite;
+    private MarineSprite marineSprite;
     private boolean stopCurrentUpdateCall = false; // this determines whether to prematurely stop the update execution
 
     public void initEntities(Properties gameProperties) {
@@ -32,6 +34,12 @@ public class PrepRoom {
                     default:
                 }
             }
+            else if (entry.getKey().toString().contains("Robot")){
+                robotSprite = new RobotSprite(IOUtils.parseCoords(entry.getValue().toString()));
+            }
+            else if (entry.getKey().toString().contains("Marine")) {
+                marineSprite = new MarineSprite(IOUtils.parseCoords(entry.getValue().toString()));
+            }
         }
     }
 
@@ -45,6 +53,10 @@ public class PrepRoom {
             return;
         }
 
+        // Draw two characters images, no interaction here
+        robotSprite.draw();
+        marineSprite.draw();
+
         restartArea.update(input, player);
         restartArea.draw();
 
@@ -53,10 +65,21 @@ public class PrepRoom {
             player.draw();
         }
 
-        // door unlock mechanism
-        if (input.wasPressed(Keys.R) && !findDoor().isUnlocked()) {
-            findDoor().unlock(false);
+        // character changing logic && door unlocking mechanism
+        if (input.wasPressed(Keys.R)){
+            player.changeCharacter(Character.ROBOT);
+            if (!findDoor().isUnlocked()){
+                findDoor().unlock(false);
+            }
         }
+        else if (input.wasPressed(Keys.M)){
+            player.changeCharacter(Character.MARINE);
+            if (!findDoor().isUnlocked()){
+                findDoor().unlock(false);
+            }
+        }
+
+
     }
 
     private boolean stopUpdatingEarlyIfNeeded() {

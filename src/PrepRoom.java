@@ -8,18 +8,15 @@ import java.util.Properties;
 /**
  * Room where the game starts
  */
-public class PrepRoom {
-    private Player player;
+public class PrepRoom extends Room {
     private Door door;
     private RestartArea restartArea;
     private RobotSprite robotSprite;
     private MarineSprite marineSprite;
-    private boolean stopCurrentUpdateCall = false; // this determines whether to prematurely stop the update execution
-    private ArrayList<Projectiles> projectiles;
 
     public void initEntities(Properties gameProperties) {
         // find the configuration of game objects for this room
-        projectiles = new ArrayList<>();
+        super.setProjectiles(new ArrayList<>());
         for (Map.Entry<Object, Object> entry: gameProperties.entrySet()) {
             String roomSuffix = String.format(".%s", ShadowDungeon.PREP_ROOM_NAME);
             if (entry.getKey().toString().contains(roomSuffix)) {
@@ -51,7 +48,7 @@ public class PrepRoom {
         UserInterface.drawCharacterDescMessage();
 
         // update and draw all game objects in this room
-        door.update(player);
+        door.update(super.getPlayer());
         door.draw();
         if (stopUpdatingEarlyIfNeeded()) {
             return;
@@ -61,62 +58,32 @@ public class PrepRoom {
         robotSprite.draw();
         marineSprite.draw();
 
-        restartArea.update(input, player);
+        restartArea.update(input, super.getPlayer());
         restartArea.draw();
 
-        if (player != null) {
-            player.update(input);
-            player.draw();
-            Projectiles newBullet = player.shoot(input);
-            if (newBullet != null) {
-                projectiles.add(newBullet);
-            }
-        }
 
         // character changing logic && door unlocking mechanism
         if (input.wasPressed(Keys.R)){
-            player.changeCharacter(Character.ROBOT);
+            super.getPlayer().changeCharacter(Character.ROBOT);
             if (!findDoor().isUnlocked()){
                 findDoor().unlock(false);
             }
         }
         else if (input.wasPressed(Keys.M)){
-            player.changeCharacter(Character.MARINE);
+            super.getPlayer().changeCharacter(Character.MARINE);
             if (!findDoor().isUnlocked()){
                 findDoor().unlock(false);
             }
         }
 
-        for (Projectiles p: projectiles) {
-            p.update();
-            p.draw();
-        }
+        // Update and renders player + projectiles
+        super.update(input);
 
 
-    }
-
-    private boolean stopUpdatingEarlyIfNeeded() {
-        if (stopCurrentUpdateCall) {
-            player = null;
-            stopCurrentUpdateCall = false;
-            return true;
-        }
-        return false;
-    }
-
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
-
-    public void stopCurrentUpdateCall() {
-        stopCurrentUpdateCall = true;
     }
 
     public Door findDoor() {
         return door;
     }
 
-    public Door findDoorByDestination() {
-        return door;
-    }
 }

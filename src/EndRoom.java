@@ -1,20 +1,20 @@
 import bagel.Input;
 import bagel.Keys;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Properties;
 
 /**
  * Room where the game ends when the player either completes all rooms or dies
  */
-public class EndRoom {
-    private Player player;
+public class EndRoom extends Room{
     private Door door;
     private RestartArea restartArea;
     private boolean isGameOver = false;
-    private boolean stopCurrentUpdateCall = false; // this determines whether to prematurely stop the update execution
 
     public void initEntities(Properties gameProperties) {
+        super.setProjectiles(new ArrayList<>());
         // find the configuration of game objects for this room
         for (Map.Entry<Object, Object> entry: gameProperties.entrySet()) {
             String roomSuffix = String.format(".%s", ShadowDungeon.END_ROOM_NAME);
@@ -45,43 +45,20 @@ public class EndRoom {
         }
 
         // update and draw all game objects in this room
-        door.update(player);
+        door.update(super.getPlayer());
         door.draw();
         if (stopUpdatingEarlyIfNeeded()) {
             return;
         }
 
-        restartArea.update(input, player);
+        restartArea.update(input, super.getPlayer());
         restartArea.draw();
 
-        if (player != null) {
-            player.update(input);
-            player.draw();
-        }
-    }
-
-    private boolean stopUpdatingEarlyIfNeeded() {
-        if (stopCurrentUpdateCall) {
-            player = null;
-            stopCurrentUpdateCall = false;
-            return true;
-        }
-        return false;
-    }
-
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
-
-    public void stopCurrentUpdateCall() {
-        stopCurrentUpdateCall = true;
+        // Updates and renders player + projectiles(only bullet in this case)
+        super.update(input);
     }
 
     public Door findDoor() {
-        return door;
-    }
-
-    public Door findDoorByDestination() {
         return door;
     }
 

@@ -7,15 +7,13 @@ import java.util.Properties;
 /**
  * Room with doors that are locked until the plaer defeats all enemies
  */
-public class BattleRoom {
-    private Player player;
+public class BattleRoom extends Room{
     private Door primaryDoor;
     private Door secondaryDoor;
     private KeyBulletKin keyBulletKin;
     private ArrayList<TreasureBox> treasureBoxes;
     private ArrayList<Wall> walls;
     private ArrayList<River> rivers;
-    private boolean stopCurrentUpdateCall = false; // this determines whether to prematurely stop the update execution
     private boolean isComplete = false;
     private final String nextRoomName;
     private final String roomName;
@@ -29,6 +27,7 @@ public class BattleRoom {
     }
 
     public void initEntities(Properties gameProperties) {
+        super.setProjectiles(new ArrayList<>());
         // find the configuration of game objects for this room
         for (Map.Entry<Object, Object> entry: gameProperties.entrySet()) {
             String roomSuffix = String.format(".%s", roomName);
@@ -79,66 +78,48 @@ public class BattleRoom {
 
     public void update(Input input) {
         // update and draw all active game objects in this room
-        primaryDoor.update(player);
+        primaryDoor.update(super.getPlayer());
         primaryDoor.draw();
         if (stopUpdatingEarlyIfNeeded()) {
             return;
         }
 
-        secondaryDoor.update(player);
+        secondaryDoor.update(super.getPlayer());
         secondaryDoor.draw();
         if (stopUpdatingEarlyIfNeeded()) {
             return;
         }
 
         if (keyBulletKin.isActive()) {
-            keyBulletKin.update(player);
+            keyBulletKin.update(super.getPlayer());
             keyBulletKin.draw();
         }
 
         for (Wall wall: walls) {
-            wall.update(player);
+            wall.update(super.getPlayer());
             wall.draw();
         }
 
         for (River river: rivers) {
-            river.update(player);
+            river.update(super.getPlayer());
             river.draw();
         }
 
         for (TreasureBox treasureBox: treasureBoxes) {
             if (treasureBox.isActive()) {
-                treasureBox.update(input, player);
+                treasureBox.update(input, super.getPlayer());
                 treasureBox.draw();
             }
         }
 
-        if (player != null) {
-            player.update(input);
-            player.draw();
-        }
 
         if (noMoreEnemies() && !isComplete()) {
             setComplete(true);
             unlockAllDoors();
         }
-    }
 
-    private boolean stopUpdatingEarlyIfNeeded() {
-        if (stopCurrentUpdateCall) {
-            player = null;
-            stopCurrentUpdateCall = false;
-            return true;
-        }
-        return false;
-    }
-
-    public void stopCurrentUpdateCall() {
-        stopCurrentUpdateCall = true;
-    }
-
-    public void setPlayer(Player player) {
-        this.player = player;
+        // Update and renders player + bullets
+        super.update(input);
     }
 
     public Door findDoorByDestination(String roomName) {

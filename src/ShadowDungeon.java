@@ -87,7 +87,7 @@ public class ShadowDungeon extends AbstractGame {
         Door nextDoor;
         switch (destRoomName) {
             case PREP_ROOM_NAME:
-                nextDoor = prepRoom.findDoorByDestination();
+                nextDoor = prepRoom.findDoor();
 
                 // assume that prep room can only be entered through Battle Room A
                 if (currRoomName.equals(BATTLE_ROOM_A_NAME)) {
@@ -146,7 +146,7 @@ public class ShadowDungeon extends AbstractGame {
 
                 return;
             default:
-                nextDoor = endRoom.findDoorByDestination();
+                nextDoor = endRoom.findDoor();
 
                 // assume that end room can only be entered through Battle Room B
                 if (currRoomName.equals(BATTLE_ROOM_B_NAME)) {

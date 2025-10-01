@@ -78,13 +78,13 @@ public class BattleRoom extends Room{
 
     public void update(Input input) {
         // update and draw all active game objects in this room
-        primaryDoor.update(super.getPlayer());
+        primaryDoor.update(super.getPlayer(), getProjectiles());
         primaryDoor.draw();
         if (stopUpdatingEarlyIfNeeded()) {
             return;
         }
 
-        secondaryDoor.update(super.getPlayer());
+        secondaryDoor.update(super.getPlayer(), getProjectiles());
         secondaryDoor.draw();
         if (stopUpdatingEarlyIfNeeded()) {
             return;
@@ -96,7 +96,7 @@ public class BattleRoom extends Room{
         }
 
         for (Wall wall: walls) {
-            wall.update(super.getPlayer());
+            wall.update(super.getPlayer(), getProjectiles());
             wall.draw();
         }
 

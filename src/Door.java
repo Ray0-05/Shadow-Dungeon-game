@@ -2,10 +2,12 @@ import bagel.Image;
 import bagel.util.Point;
 import jdk.jshell.execution.LocalExecutionControl;
 
+import java.util.ArrayList;
+
 /**
  * Door which can be locked or unlocked, allows the player to move to the room it's connected to
  */
-public class Door extends GameObject implements CollidableWithPlayer{
+public class Door extends GameObject implements CollidableWithPlayer, CollidableWithProjectiles{
     public final String toRoomName;
     public BattleRoom battleRoom; // only set if this door is inside a Battle Room
     private boolean unlocked = false;
@@ -26,11 +28,17 @@ public class Door extends GameObject implements CollidableWithPlayer{
         this.battleRoom = battleRoom;
     }
 
-    public void update(Player player) {
+    public void update(Player player, ArrayList<Projectiles> projectiles) {
         if (hasCollidedWith(player)) {
             onCollideWith(player);
         } else {
             onNoLongerCollide();
+        }
+
+        for (Projectiles p: projectiles){
+            if(hasCollidedWith(p)) {
+                p.setDestroyed(true);
+            }
         }
     }
 
@@ -39,7 +47,7 @@ public class Door extends GameObject implements CollidableWithPlayer{
         super.setImage(UNLOCKED);
         this.justEntered = justEntered;
     }
-    
+
 
     private void onCollideWith(Player player) {
         // when the player only just entered this door's room, overlapping with the unlocked door shouldn't trigger room transition

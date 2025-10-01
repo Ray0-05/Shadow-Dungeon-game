@@ -33,8 +33,12 @@ public abstract class Room {
 
             if (!(topLeft.x >= 0 && bottomRight.x <= Window.getWidth()
                     && topLeft.y >= 0 && bottomRight.y <= Window.getHeight())) {
-                it.remove(); // remove if its out of bounds
-            } else {
+                p.setDestroyed(true); // remove if its out of bounds
+            }
+
+            if (p.isDestroyed()){
+                it.remove(); // remove all bullets that is set destroyed (etc crash with walls, enemy, tables, border)
+            }else {
                 p.draw();
             }
         }

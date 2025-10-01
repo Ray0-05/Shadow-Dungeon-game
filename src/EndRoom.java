@@ -45,7 +45,7 @@ public class EndRoom extends Room{
         }
 
         // update and draw all game objects in this room
-        door.update(super.getPlayer());
+        door.update(super.getPlayer(), getProjectiles());
         door.draw();
         if (stopUpdatingEarlyIfNeeded()) {
             return;

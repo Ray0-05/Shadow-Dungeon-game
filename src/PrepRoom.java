@@ -45,6 +45,7 @@ public class PrepRoom {
 
     public void update(Input input) {
         UserInterface.drawStartMessages();
+        UserInterface.drawCharacterDescMessage();
 
         // update and draw all game objects in this room
         door.update(player);

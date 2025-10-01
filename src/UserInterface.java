@@ -17,20 +17,34 @@ public class UserInterface {
     public static void drawStartMessages() {
         drawTextCentered("title", Integer.parseInt(ShadowDungeon.getGameProps().getProperty("title.fontSize")), Double.parseDouble(ShadowDungeon.getGameProps().getProperty("title.y")));
         drawTextCentered("moveMessage", Integer.parseInt(ShadowDungeon.getGameProps().getProperty("prompt.fontSize")), Double.parseDouble(ShadowDungeon.getGameProps().getProperty("moveMessage.y")));
+        drawTextCentered("selectMessage", Integer.parseInt(ShadowDungeon.getGameProps().getProperty("prompt.fontSize")), Double.parseDouble(ShadowDungeon.getGameProps().getProperty("selectMessage.y")));
     }
 
     public static void drawEndMessage(boolean win) {
         drawTextCentered(win ? "gameEnd.won" : "gameEnd.lost", Integer.parseInt(ShadowDungeon.getGameProps().getProperty("title.fontSize")), Double.parseDouble(ShadowDungeon.getGameProps().getProperty("title.y")));
     }
 
-    public static void drawTextCentered(String textPath, int fontSize, double posY) {
+    public static void drawCharacterDescMessage() {
+        Font font = new Font("res/wheaton.otf", Integer.parseInt(ShadowDungeon.getGameProps().getProperty("playerStats.fontSize")));
+
+        String robotDesc = ShadowDungeon.getMessageProps().getProperty("robotDescription");
+        Point robotDescPoint = IOUtils.parseCoords(ShadowDungeon.getGameProps().getProperty("robotMessage"));
+
+        String marineDesc = ShadowDungeon.getMessageProps().getProperty("marineDescription");
+        Point marineDescPoint = IOUtils.parseCoords(ShadowDungeon.getGameProps().getProperty("marineMessage"));
+
+        font.drawString(robotDesc, robotDescPoint.x, robotDescPoint.y);
+        font.drawString(marineDesc, marineDescPoint.x, marineDescPoint.y);
+    }
+
+    private static void drawTextCentered(String textPath, int fontSize, double posY) {
         Font font = new Font("res/wheaton.otf", fontSize);
         String text = ShadowDungeon.getMessageProps().getProperty(textPath);
         double posX = (Window.getWidth() - font.getWidth(text)) / 2;
         font.drawString(text, posX, posY);
     }
 
-    public static void drawData(String data, int fontSize, Point location) {
+    private static void drawData(String data, int fontSize, Point location) {
         Font font = new Font("res/wheaton.otf", fontSize);
         font.drawString(data, location.x, location.y);
     }

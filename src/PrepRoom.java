@@ -1,6 +1,7 @@
 import bagel.Input;
 import bagel.Keys;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Properties;
 
@@ -14,9 +15,11 @@ public class PrepRoom {
     private RobotSprite robotSprite;
     private MarineSprite marineSprite;
     private boolean stopCurrentUpdateCall = false; // this determines whether to prematurely stop the update execution
+    private ArrayList<Projectiles> projectiles;
 
     public void initEntities(Properties gameProperties) {
         // find the configuration of game objects for this room
+        projectiles = new ArrayList<>();
         for (Map.Entry<Object, Object> entry: gameProperties.entrySet()) {
             String roomSuffix = String.format(".%s", ShadowDungeon.PREP_ROOM_NAME);
             if (entry.getKey().toString().contains(roomSuffix)) {
@@ -64,6 +67,10 @@ public class PrepRoom {
         if (player != null) {
             player.update(input);
             player.draw();
+            Projectiles newBullet = player.shoot(input);
+            if (newBullet != null) {
+                projectiles.add(newBullet);
+            }
         }
 
         // character changing logic && door unlocking mechanism
@@ -78,6 +85,11 @@ public class PrepRoom {
             if (!findDoor().isUnlocked()){
                 findDoor().unlock(false);
             }
+        }
+
+        for (Projectiles p: projectiles) {
+            p.update();
+            p.draw();
         }
 
 

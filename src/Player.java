@@ -1,6 +1,7 @@
 import bagel.*;
 import bagel.util.Point;
 import bagel.util.Rectangle;
+import bagel.util.Vector2;
 
 /**
  * Player character that can move around and between rooms, defeat enemies, collect coins
@@ -14,6 +15,7 @@ public class Player {
     private final double speed;
     private double coins = 0;
     private boolean faceLeft = false;
+    private boolean canShoot = false;
 
     public Player(Point position) {
         this.position = position;
@@ -93,5 +95,17 @@ public class Player {
     public void changeCharacter(Character newCharacter){
         character = newCharacter;
         currImage = newCharacter.getRightImage();
+
+        // allow shooting
+        if (!canShoot) canShoot = true;
     }
+
+    public Bullet shoot(Input input) {
+        if (input.wasPressed(MouseButtons.LEFT) && canShoot) {
+            Vector2 target = new Vector2(input.getMouseX(), input.getMouseY());
+            return new Bullet(new Vector2(position.x, position.y), target);
+        }
+        return null; // no bullet fired
+    }
+
 }

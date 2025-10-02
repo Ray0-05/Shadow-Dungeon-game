@@ -36,6 +36,7 @@ public abstract class Room {
                 p.setDestroyed(true); // remove if its out of bounds
             }
 
+            // Double confirm with this
             if (p.isDestroyed()){
                 it.remove(); // remove all bullets that is set destroyed (etc crash with walls, enemy, tables, border)
             }else {

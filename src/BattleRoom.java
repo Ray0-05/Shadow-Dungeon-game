@@ -11,6 +11,7 @@ public class BattleRoom extends Room{
     private Door primaryDoor;
     private Door secondaryDoor;
     private KeyBulletKin keyBulletKin;
+    private ArrayList<BulletKin> bulletKins;
     private ArrayList<TreasureBox> treasureBoxes;
     private ArrayList<Wall> walls;
     private ArrayList<River> rivers;
@@ -22,6 +23,7 @@ public class BattleRoom extends Room{
         walls = new ArrayList<>();
         rivers = new ArrayList<>();
         treasureBoxes = new ArrayList<>();
+        bulletKins = new ArrayList<>();
         this.roomName = roomName;
         this.nextRoomName = nextRoomName;
     }
@@ -55,6 +57,10 @@ public class BattleRoom extends Room{
                             break;
                         case "keyBulletKin":
                             keyBulletKin = new KeyBulletKin(IOUtils.parseCoords(propertyValue));
+                            break;
+                        case "bulletKin":
+                            BulletKin bk = new BulletKin(IOUtils.parseCoords(coords));
+                            bulletKins.add(bk);
                             break;
                         case "wall":
                             Wall wall = new Wall(IOUtils.parseCoords(coords));
@@ -93,6 +99,14 @@ public class BattleRoom extends Room{
         if (keyBulletKin.isActive()) {
             keyBulletKin.update(super.getPlayer());
             keyBulletKin.draw();
+        }
+
+        for (BulletKin bk: bulletKins){
+            bk.update(getPlayer(), super.getProjectiles());
+            if (bk.isAlive()){
+                bk.draw();
+            }
+            // implement removing logic later on
         }
 
         for (Wall wall: walls) {

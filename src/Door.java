@@ -1,6 +1,5 @@
 import bagel.Image;
 import bagel.util.Point;
-import jdk.jshell.execution.LocalExecutionControl;
 
 import java.util.ArrayList;
 
@@ -28,14 +27,14 @@ public class Door extends GameObject implements CollidableWithPlayer, Collidable
         this.battleRoom = battleRoom;
     }
 
-    public void update(Player player, ArrayList<Projectiles> projectiles) {
+    public void update(Player player, ArrayList<Projectile> allProjectiles) {
         if (hasCollidedWith(player)) {
             onCollideWith(player);
         } else {
             onNoLongerCollide();
         }
 
-        for (Projectiles p: projectiles){
+        for (Projectile p: allProjectiles){
             if(hasCollidedWith(p)) {
                 p.setDestroyed(true);
             }

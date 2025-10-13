@@ -1,21 +1,16 @@
 import bagel.Image;
-import bagel.Window;
-import bagel.util.Point;
-import bagel.util.Rectangle;
 import bagel.util.Vector2;
 
-public class Projectiles extends GameObject implements CollidableWithPlayer{
+public class Projectile extends GameObject implements CollidableWithPlayer{
     private final double speed;
     private int damage;
-    private boolean destroyed;
-    private final int coolDownFreq;
+    private boolean destroyed = false;
     private Vector2 velocity;
     private Vector2 position;
 
-    public Projectiles(Vector2 start, Vector2 target, Image image, double speed, int coolDownFreq, int damage){
+    public Projectile(Vector2 start, Vector2 target, Image image, double speed, int damage){
         super(start.asPoint(), image);
         this.speed = speed;
-        this.coolDownFreq = coolDownFreq;
         this.damage = damage;
 
         // Direction = (target - start)
@@ -30,7 +25,7 @@ public class Projectiles extends GameObject implements CollidableWithPlayer{
     public void update() {
         // might wanna add deltaTime (helps keep motion smooth across framerates)
         position = (position.add(velocity));
-        // Make sure it draws the image at the current position(Game Object's position updated)
+        // Make sure it later draws the image at the current position(Game Object's position updated)
         super.setPosition(position.asPoint());
     }
 
@@ -39,20 +34,12 @@ public class Projectiles extends GameObject implements CollidableWithPlayer{
         return damage;
     }
 
-    public void setDamage(int damage) {
-        this.damage = damage;
-    }
-
     public boolean isDestroyed() {
         return destroyed;
     }
 
     public void setDestroyed(boolean destroyed) {
         this.destroyed = destroyed;
-    }
-
-    public int getCoolDownFreq() {
-        return coolDownFreq;
     }
 
 }

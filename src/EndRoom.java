@@ -1,5 +1,4 @@
 import bagel.Input;
-import bagel.Keys;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -14,7 +13,7 @@ public class EndRoom extends Room{
     private boolean isGameOver = false;
 
     public void initEntities(Properties gameProperties) {
-        super.setProjectiles(new ArrayList<>());
+        super.setAllProjectiles(new ArrayList<>());
         // find the configuration of game objects for this room
         for (Map.Entry<Object, Object> entry: gameProperties.entrySet()) {
             String roomSuffix = String.format(".%s", ShadowDungeon.END_ROOM_NAME);
@@ -45,7 +44,7 @@ public class EndRoom extends Room{
         }
 
         // update and draw all game objects in this room
-        door.update(super.getPlayer(), getProjectiles());
+        door.update(super.getPlayer(), getAllProjectiles());
         door.draw();
         if (stopUpdatingEarlyIfNeeded()) {
             return;

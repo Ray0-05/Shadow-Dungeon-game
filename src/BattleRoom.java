@@ -28,10 +28,10 @@ public class BattleRoom extends Room{
         ashenBulletKins = new ArrayList<>();
         this.roomName = roomName;
         this.nextRoomName = nextRoomName;
+        super.setAllProjectiles(new ArrayList<>());
     }
 
     public void initEntities(Properties gameProperties) {
-        super.setProjectiles(new ArrayList<>());
         // find the configuration of game objects for this room
         for (Map.Entry<Object, Object> entry: gameProperties.entrySet()) {
             String roomSuffix = String.format(".%s", roomName);
@@ -90,13 +90,13 @@ public class BattleRoom extends Room{
 
     public void update(Input input) {
         // update and draw all active game objects in this room
-        primaryDoor.update(super.getPlayer(), getProjectiles());
+        primaryDoor.update(super.getPlayer(), getAllProjectiles());
         primaryDoor.draw();
         if (stopUpdatingEarlyIfNeeded()) {
             return;
         }
 
-        secondaryDoor.update(super.getPlayer(), getProjectiles());
+        secondaryDoor.update(super.getPlayer(), getAllProjectiles());
         secondaryDoor.draw();
         if (stopUpdatingEarlyIfNeeded()) {
             return;
@@ -108,23 +108,31 @@ public class BattleRoom extends Room{
         }
 
         for (BulletKin bk: bulletKins){
-            bk.update(getPlayer(), super.getProjectiles());
+            bk.update(getPlayer(), super.getAllProjectiles());
             if (bk.isAlive()) {
                 bk.draw();
+                Fireball fireball = bk.shoot(super.getPlayer());
+                if (fireball != null){
+                    super.getAllProjectiles().add(fireball);
+                }
             }
         }
         bulletKins.removeIf(b -> !b.isAlive());
 
         for (AshenBulletKin abk: ashenBulletKins){
-            abk.update(super.getPlayer(), super.getProjectiles());
+            abk.update(super.getPlayer(), super.getAllProjectiles());
             if (abk.isAlive()){
                 abk.draw();
+                Fireball fireball = abk.shoot(super.getPlayer());
+                if (fireball != null){
+                    super.getAllProjectiles().add(fireball);
+                }
             }
         }
         ashenBulletKins.removeIf(abk -> !abk.isAlive());
 
         for (Wall wall: walls) {
-            wall.update(super.getPlayer(), getProjectiles());
+            wall.update(super.getPlayer(), super.getAllProjectiles());
             wall.draw();
         }
 

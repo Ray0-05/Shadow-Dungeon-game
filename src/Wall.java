@@ -12,12 +12,12 @@ public class Wall extends GameObject implements CollidableWithPlayer, Collidable
         super(position, new Image("res/wall.png"));
     }
 
-    public void update(Player player, ArrayList<Projectiles> projectiles) {
+    public void update(Player player, ArrayList<Projectile> projectiles) {
         if (hasCollidedWith(player)) {
             // set the player to its position prior to attempting to move through this wall
             player.move(player.getPrevPosition().x, player.getPrevPosition().y);
         }
-        for (Projectiles p: projectiles){
+        for (Projectile p: projectiles){
             if(hasCollidedWith(p)) {
                 p.setDestroyed(true);
             }

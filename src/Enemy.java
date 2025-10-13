@@ -1,5 +1,4 @@
 import bagel.util.Point;
-import bagel.Image;
 
 import java.util.ArrayList;
 
@@ -15,7 +14,7 @@ public abstract class Enemy extends GameObject implements CollidableWithPlayer, 
         this.health = character.getInit_health();
     }
 
-    public abstract void update(Player player, ArrayList<Projectiles> projectiles);
+    public abstract void update(Player player, ArrayList<Projectile> allProjectiles);
 
     public void damagePlayerOnContact(Player player){
         player.receiveDamage(DMG_ON_CONTACT);

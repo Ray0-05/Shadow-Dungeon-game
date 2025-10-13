@@ -9,7 +9,7 @@ import java.util.Properties;
 public abstract class Room {
     private Player player;
     private boolean stopCurrentUpdateCall = false; // this determines whether to prematurely stop the update execution
-    private ArrayList<Projectiles> projectiles;
+    private ArrayList<Projectile> allProjectiles;
 
     public abstract void initEntities(Properties gameProperties);
 
@@ -17,16 +17,16 @@ public abstract class Room {
         if (player != null) {
             player.update(input);
             player.draw();
-            Projectiles newBullet = player.shoot(input);
+            Bullet newBullet = player.shoot(input);
             if (newBullet != null) {
-                projectiles.add(newBullet);
+                allProjectiles.add(newBullet);
             }
         }
 
 
-        Iterator<Projectiles> it = projectiles.iterator();
+        Iterator<Projectile> it = allProjectiles.iterator();
         while (it.hasNext()) {
-            Projectiles p = it.next();
+            Projectile p = it.next();
             p.update();
 
             Point topLeft = p.getBoundingBox().topLeft();
@@ -39,7 +39,7 @@ public abstract class Room {
 
             // Double confirm with this
             if (p.isDestroyed()){
-                it.remove(); // remove all bullets that is set destroyed (etc crash with walls, enemy, tables, border)
+                it.remove(); // remove all allProjectiles that is set destroyed (etc crash with walls, enemy, tables, border)
             }else {
                 p.draw();
             }
@@ -53,7 +53,7 @@ public abstract class Room {
         if (stopCurrentUpdateCall) {
             player = null;
             stopCurrentUpdateCall = false;
-            projectiles = new ArrayList<>();
+            allProjectiles = new ArrayList<>();
             return true;
         }
         return false;
@@ -68,12 +68,12 @@ public abstract class Room {
     }
 
 
-    public ArrayList<Projectiles> getProjectiles() {
-        return projectiles;
+    public ArrayList<Projectile> getAllProjectiles() {
+        return allProjectiles;
     }
 
-    public void setProjectiles(ArrayList<Projectiles> projectiles) {
-        this.projectiles = projectiles;
+    public void setAllProjectiles(ArrayList<Projectile> allProjectiles) {
+        this.allProjectiles = allProjectiles;
     }
 
     public Player getPlayer() {

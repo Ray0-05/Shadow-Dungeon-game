@@ -5,7 +5,7 @@ public interface CollidableWithProjectiles {
     Rectangle getBoundingBox();
 
     // Default collision check
-    default boolean hasCollidedWith(Projectiles projectile) {
+    default boolean hasCollidedWith(Projectile projectile) {
         return this.getBoundingBox()
                 .intersects(projectile.getBoundingBox());
     }

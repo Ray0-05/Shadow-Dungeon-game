@@ -5,15 +5,12 @@ import java.util.ArrayList;
 
 public class AshenBulletKin extends Enemy implements CollidableWithPlayer, CollidableWithProjectiles{
     private static final int COIN = Integer.parseInt(ShadowDungeon.getGameProps().getProperty("ashenBulletKinCoin"));
-    private static final int SHOT_FREQ = Integer.parseInt(ShadowDungeon.getGameProps().getProperty(
-            "ashenBulletKinShootFrequency"));
-    private int shotRemainingCoolDown;
-    private boolean canShoot;
+    private final CoolDownTimer coolDownTimer;
 
     public AshenBulletKin(Point position){
         super(position, EnemyCharacter.ASHEN_BULLET_KIN);
-        this.shotRemainingCoolDown = 0;
-        this.canShoot = true;
+        coolDownTimer = new CoolDownTimer(Integer.parseInt(ShadowDungeon.getGameProps().getProperty(
+                "ashenBulletKinShootFrequency")));
     }
 
     @Override
@@ -39,16 +36,13 @@ public class AshenBulletKin extends Enemy implements CollidableWithPlayer, Colli
             }
         }
 
-        if (shotRemainingCoolDown > 0){
-            shotRemainingCoolDown--;
-        }else{
-            canShoot = true;
-        }
+        // Reduce the cooldown time
+        coolDownTimer.tick();
     }
+
     public Fireball shoot(Player player) {
-        if (canShoot){
-            shotRemainingCoolDown = SHOT_FREQ; // reset the shot timer
-            canShoot = false;
+        if (coolDownTimer.readyToShoot()){
+            coolDownTimer.reset(); // reset the shot timer
             Vector2 target = new Vector2(player.getPosition().x, player.getPosition().y);
             Vector2 start = new Vector2(super.getPosition().x, super.getPosition().y);
             return new Fireball(start, target);

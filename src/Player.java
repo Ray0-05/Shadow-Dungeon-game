@@ -16,8 +16,7 @@ public class Player {
     private double coins = 0;
     private boolean faceLeft = false;
     private Weapon weapon;
-    private boolean canShoot = false;
-    private int lastShotInterval; // assuming the player can immediately shoot when spawn
+    private final CoolDownTimer coolDownTimer;
 
     public Player(Point position) {
         this.position = position;
@@ -26,7 +25,7 @@ public class Player {
         this.speed = Double.parseDouble(ShadowDungeon.getGameProps().getProperty("movingSpeed"));
         this.health = Double.parseDouble(ShadowDungeon.getGameProps().getProperty("initialHealth"));
         this.weapon = Weapon.STANDARD;
-        this.lastShotInterval = weapon.getShotCooldown(); // assuming the player can immediately shoot when spawn
+        this.coolDownTimer = new CoolDownTimer(weapon.getShotCooldown());
     }
 
     public void update(Input input) {
@@ -57,10 +56,8 @@ public class Player {
             move(currX, currY);
         }
 
-        // Keep track of the last shoot interval
-        if  (lastShotInterval < weapon.getShotCooldown()){
-            lastShotInterval++;
-        }
+        // Reduce the shooting cooldown time
+        coolDownTimer.tick();
     }
     
     public void move(double x, double y) {
@@ -104,14 +101,11 @@ public class Player {
     public void changeCharacter(Character newCharacter){
         character = newCharacter;
         currImage = newCharacter.getRightImage();
-
-        // allow shooting
-        if (!canShoot) canShoot = true;
     }
 
     public Bullet shoot(Input input) {
-        if (input.wasPressed(MouseButtons.LEFT) && canShoot && lastShotInterval == weapon.getShotCooldown()) {
-            lastShotInterval = 0; // reset the shot timer
+        if (input.wasPressed(MouseButtons.LEFT) && character != Character.ORIGINAL && coolDownTimer.readyToShoot()) {
+            coolDownTimer.reset(); // reset the shot timer
             Vector2 target = new Vector2(input.getMouseX(), input.getMouseY());
             return new Bullet(new Vector2(position.x, position.y), target, weapon.getDamage());
         }

@@ -5,15 +5,12 @@ import java.util.ArrayList;
 
 public class BulletKin extends Enemy{
     private static final int COIN = Integer.parseInt(ShadowDungeon.getGameProps().getProperty("bulletKinCoin"));
-    private static final int SHOT_FREQ = Integer.parseInt(ShadowDungeon.getGameProps().getProperty(
-                                            "bulletKinShootFrequency"));
-    private int shotRemainingCoolDown;
-    private boolean canShoot;
+    private final CoolDownTimer coolDownTimer;
 
     public BulletKin(Point position){
         super(position, EnemyCharacter.BULLET_KIN);
-        this.shotRemainingCoolDown = 0;
-        this.canShoot = true;
+        coolDownTimer = new CoolDownTimer(Integer.parseInt(ShadowDungeon.getGameProps().getProperty(
+                "bulletKinShootFrequency")));
     }
 
     @Override
@@ -39,17 +36,12 @@ public class BulletKin extends Enemy{
             }
         }
 
-        if (shotRemainingCoolDown > 0){
-            shotRemainingCoolDown--;
-        }else{
-            canShoot = true;
-        }
+        coolDownTimer.tick();
     }
 
     public Fireball shoot(Player player) {
-        if (canShoot){
-            shotRemainingCoolDown = SHOT_FREQ; // reset the shot timer
-            canShoot = false;
+        if (coolDownTimer.readyToShoot()){
+            coolDownTimer.reset();
             Vector2 target = new Vector2(player.getPosition().x, player.getPosition().y);
             Vector2 start = new Vector2(super.getPosition().x, super.getPosition().y);
             return new Fireball(start, target);

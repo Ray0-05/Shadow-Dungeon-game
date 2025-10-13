@@ -644,7 +644,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="xa7-EZkNiPJOSAdMR3WK-195" value="&amp;lt;&amp;lt; enumeration&amp;gt;&amp;gt;&amp;nbsp;&lt;div&gt;WeaponLevel&lt;/div&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="xa7-EZkNiPJOSAdMR3WK-195" value="&amp;lt;&amp;lt; enumeration&amp;gt;&amp;gt;&amp;nbsp;&lt;div&gt;Weapon&lt;/div&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="2370" y="130" width="160" height="100" as="geometry" />
         </mxCell>
         <mxCell id="xa7-EZkNiPJOSAdMR3WK-196" value="STANDARD&lt;div&gt;ADVANCE&lt;/div&gt;&lt;div&gt;ELITE&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="xa7-EZkNiPJOSAdMR3WK-195" vertex="1">

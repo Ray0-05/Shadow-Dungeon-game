@@ -12,10 +12,11 @@ public class Projectiles extends GameObject implements CollidableWithPlayer{
     private Vector2 velocity;
     private Vector2 position;
 
-    public Projectiles(Vector2 start, Vector2 target, Image image, double speed, int coolDownFreq){
+    public Projectiles(Vector2 start, Vector2 target, Image image, double speed, int coolDownFreq, int damage){
         super(start.asPoint(), image);
         this.speed = speed;
-        this. coolDownFreq = coolDownFreq;
+        this.coolDownFreq = coolDownFreq;
+        this.damage = damage;
 
         // Direction = (target - start)
         Vector2 direction = target.sub(start).normalised();

@@ -6,7 +6,8 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="ShadowDungeon(Iteration 2)" />
+        <module name="ShadowDungeon" />
+        <module name="ShadowDungeon-Iteration2" />
       </profile>
     </annotationProcessing>
   </component>

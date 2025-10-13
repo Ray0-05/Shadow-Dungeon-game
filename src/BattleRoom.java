@@ -5,13 +5,14 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * Room with doors that are locked until the plaer defeats all enemies
+ * Room with doors that are locked until the plaer collect the key from keybulletkin
  */
 public class BattleRoom extends Room{
     private Door primaryDoor;
     private Door secondaryDoor;
     private KeyBulletKin keyBulletKin;
     private ArrayList<BulletKin> bulletKins;
+    private ArrayList<AshenBulletKin> ashenBulletKins;
     private ArrayList<TreasureBox> treasureBoxes;
     private ArrayList<Wall> walls;
     private ArrayList<River> rivers;
@@ -24,6 +25,7 @@ public class BattleRoom extends Room{
         rivers = new ArrayList<>();
         treasureBoxes = new ArrayList<>();
         bulletKins = new ArrayList<>();
+        ashenBulletKins = new ArrayList<>();
         this.roomName = roomName;
         this.nextRoomName = nextRoomName;
     }
@@ -61,6 +63,10 @@ public class BattleRoom extends Room{
                         case "bulletKin":
                             BulletKin bk = new BulletKin(IOUtils.parseCoords(coords));
                             bulletKins.add(bk);
+                            break;
+                        case "ashenBulletKin":
+                            AshenBulletKin abk = new AshenBulletKin(IOUtils.parseCoords(coords));
+                            ashenBulletKins.add(abk);
                             break;
                         case "wall":
                             Wall wall = new Wall(IOUtils.parseCoords(coords));
@@ -103,11 +109,19 @@ public class BattleRoom extends Room{
 
         for (BulletKin bk: bulletKins){
             bk.update(getPlayer(), super.getProjectiles());
-            if (bk.isAlive()){
+            if (bk.isAlive()) {
                 bk.draw();
             }
-            // implement removing logic later on
         }
+        bulletKins.removeIf(b -> !b.isAlive());
+
+        for (AshenBulletKin abk: ashenBulletKins){
+            abk.update(super.getPlayer(), super.getProjectiles());
+            if (abk.isAlive()){
+                abk.draw();
+            }
+        }
+        ashenBulletKins.removeIf(abk -> !abk.isAlive());
 
         for (Wall wall: walls) {
             wall.update(super.getPlayer(), getProjectiles());

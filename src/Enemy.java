@@ -10,9 +10,9 @@ public abstract class Enemy extends GameObject implements CollidableWithPlayer, 
     );
     private boolean isAlive = true;
 
-    public Enemy(Point position, Image image, int init_health){
-        super(position, image);
-        this.health = init_health;
+    public Enemy(Point position, EnemyCharacter character){
+        super(position, character.getImage());
+        this.health = character.getInit_health();
     }
 
     public abstract void update(Player player, ArrayList<Projectiles> projectiles);

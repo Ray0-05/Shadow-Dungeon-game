@@ -15,9 +15,9 @@ public class Player {
     private final double speed;
     private double coins = 0;
     private boolean faceLeft = false;
+    private Weapon weapon;
     private boolean canShoot = false;
-    private final static int shootCooldown = Integer.parseInt(ShadowDungeon.getGameProps().getProperty("bulletFreq"));
-    private int lastShotInterval = shootCooldown; // assuming the player can immediately shoot when spawn
+    private int lastShotInterval; // assuming the player can immediately shoot when spawn
 
     public Player(Point position) {
         this.position = position;
@@ -25,6 +25,8 @@ public class Player {
         this.currImage = character.getRightImage();
         this.speed = Double.parseDouble(ShadowDungeon.getGameProps().getProperty("movingSpeed"));
         this.health = Double.parseDouble(ShadowDungeon.getGameProps().getProperty("initialHealth"));
+        this.weapon = Weapon.STANDARD;
+        this.lastShotInterval = weapon.getShotCooldown(); // assuming the player can immediately shoot when spawn
     }
 
     public void update(Input input) {
@@ -56,7 +58,7 @@ public class Player {
         }
 
         // Keep track of the last shoot interval
-        if  (lastShotInterval < shootCooldown){
+        if  (lastShotInterval < weapon.getShotCooldown()){
             lastShotInterval++;
         }
     }
@@ -108,10 +110,10 @@ public class Player {
     }
 
     public Bullet shoot(Input input) {
-        if (input.wasPressed(MouseButtons.LEFT) && canShoot && lastShotInterval == shootCooldown) {
+        if (input.wasPressed(MouseButtons.LEFT) && canShoot && lastShotInterval == weapon.getShotCooldown()) {
             lastShotInterval = 0; // reset the shot timer
             Vector2 target = new Vector2(input.getMouseX(), input.getMouseY());
-            return new Bullet(new Vector2(position.x, position.y), target);
+            return new Bullet(new Vector2(position.x, position.y), target, weapon.getDamage());
         }
         return null; // no bullet fired
     }

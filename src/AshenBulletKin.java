@@ -1,14 +1,12 @@
-import bagel.Image;
 import bagel.util.Point;
 
-import java.lang.Character;
 import java.util.ArrayList;
 
-public class BulletKin extends Enemy{
-    private static final int COIN = Integer.parseInt(ShadowDungeon.getGameProps().getProperty("bulletKinCoin"));
+public class AshenBulletKin extends Enemy implements CollidableWithPlayer, CollidableWithProjectiles{
+    private static final int COIN = Integer.parseInt(ShadowDungeon.getGameProps().getProperty("ashenBulletKinCoin"));
 
-    public BulletKin(Point position){
-        super(position, EnemyCharacter.BULLET_KIN);
+    public AshenBulletKin(Point position){
+        super(position, EnemyCharacter.ASHEN_BULLET_KIN);
     }
 
     @Override
@@ -31,5 +29,4 @@ public class BulletKin extends Enemy{
             }
         }
     }
-
 }

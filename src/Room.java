@@ -23,6 +23,7 @@ public abstract class Room {
             }
         }
 
+
         Iterator<Projectiles> it = projectiles.iterator();
         while (it.hasNext()) {
             Projectiles p = it.next();

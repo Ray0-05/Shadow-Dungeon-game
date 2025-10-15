@@ -1,21 +1,39 @@
-import bagel.Image;
 import bagel.util.Point;
+import bagel.util.Vector2;
 
 import java.util.ArrayList;
-import java.util.Properties;
 
 /**
  * Enemy that gets removed when the player overlaps with it
  */
 public class KeyBulletKin extends Enemy{
     private boolean active = false; // only true when the Battle Room has been activated
+    private ArrayList<Point> path;
+    private int currentIndex;
+    private Vector2 currVelocity;
+    private Vector2 positionV;
+    private static final int SPEED = Integer.parseInt(ShadowDungeon.getGameProps().getProperty("keyBulletKinSpeed"));
     
-    public KeyBulletKin(Point startPos) {
-        super(startPos, EnemyCharacter.KEY_BULLET_KIN);
+    public KeyBulletKin(String coords) {
+        super(IOUtils.parseCoords(coords.split(";")[0]), EnemyCharacter.KEY_BULLET_KIN);
+        path = new ArrayList<>();
+        currentIndex = 0;
+        positionV = new Vector2(getPosition().x, getPosition().y);
+
+        for (String coord: coords.split(";")){
+            this.path.add(IOUtils.parseCoords(coord));
+        }
     }
+
 
     @Override
     public void update(Player player, ArrayList<Projectile> allProjectiles) {
+        if (isAtEndPoint()){
+            currVelocity = getVelocity();
+        }
+
+        goToNextLoc(currVelocity);
+
         if (hasContactWith(player)){
             super.OnContactWithPlayer(player);
         }
@@ -30,6 +48,34 @@ public class KeyBulletKin extends Enemy{
             }
         }
 
+
+
+    }
+
+    private void goToNextLoc(Vector2 velocity){
+        positionV = positionV.add(velocity);
+        setPosition(positionV.asPoint());
+    }
+
+    public Vector2 getVelocity() {
+        Point startPosition = path.get(currentIndex);
+        Vector2 currentVector = new Vector2(startPosition.x, startPosition.y);
+
+        int nextIndex  = (currentIndex + 1) % path.size();
+
+        Point target = path.get(nextIndex);
+        Vector2 targetVector = new Vector2(target.x, target.y);
+
+        Vector2 direction = targetVector.sub(currentVector).normalised();
+
+        currentIndex = nextIndex;
+
+        return direction.mul(SPEED);
+    }
+
+    private boolean isAtEndPoint(){
+        Point target = path.get(currentIndex);
+        return getPosition().distanceTo(target) < SPEED;
     }
 
 

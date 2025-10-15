@@ -58,9 +58,6 @@ public class BattleRoom extends Room{
                             coordinates = propertyValue.split(",");
                             secondaryDoor = new Door(IOUtils.parseCoords(propertyValue), coordinates[2], this);
                             break;
-                        case "keyBulletKin":
-                            keyBulletKin = new KeyBulletKin(IOUtils.parseCoords(propertyValue));
-                            break;
                         case "bulletKin":
                             BulletKin bk = new BulletKin(IOUtils.parseCoords(coords));
                             bulletKins.add(bk);
@@ -85,6 +82,10 @@ public class BattleRoom extends Room{
                         default:
                     }
                 }
+
+                if (objectType.equals("keyBulletKin")){
+                    keyBulletKin = new KeyBulletKin(propertyValue);
+                }
             }
         }
     }
@@ -103,17 +104,6 @@ public class BattleRoom extends Room{
             return;
         }
 
-        if (keyBulletKin.isActive() && !keyBulletKin.isDead()) {
-            keyBulletKin.update(super.getPlayer(), getAllProjectiles());
-            keyBulletKin.draw();
-        }else if (key == null && keyBulletKin.isDead()){
-            this.key = keyBulletKin.dropKey();
-        }
-
-        if (key != null && !key.isCollected()){
-            key.update(getPlayer());
-            key.draw();
-        }
 
         for (BulletKin bk: bulletKins){
             bk.update(getPlayer(), super.getAllProjectiles());
@@ -154,6 +144,18 @@ public class BattleRoom extends Room{
                 treasureBox.update(input, super.getPlayer());
                 treasureBox.draw();
             }
+        }
+
+        if (keyBulletKin.isActive() && !keyBulletKin.isDead()) {
+            keyBulletKin.update(super.getPlayer(), getAllProjectiles());
+            keyBulletKin.draw();
+        }else if (key == null && keyBulletKin.isDead()){
+            this.key = keyBulletKin.dropKey();
+        }
+
+        if (key != null && !key.isCollected()){
+            key.update(getPlayer());
+            key.draw();
         }
 
 

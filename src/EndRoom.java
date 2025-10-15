@@ -53,8 +53,10 @@ public class EndRoom extends Room{
         restartArea.update(input, super.getPlayer());
         restartArea.draw();
 
-        // Updates and renders player + projectiles(only bullet in this case)
-        super.update(input);
+        // Update and renders player + bullets
+        super.PlayerAndBulletsUpdate(input);
+        getPlayer().draw();
+        super.DeletionAndRenderingOfAllProjectiles();
     }
 
     public Door findDoor() {

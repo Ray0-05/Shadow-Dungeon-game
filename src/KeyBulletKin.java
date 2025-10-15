@@ -13,7 +13,7 @@ public class KeyBulletKin extends GameObject implements CollidableWithPlayer{
     }
 
     public void update(Player player) {
-        if (hasCollidedWith(player)) {
+        if (hasContactWith(player)) {
             dead = true;
             active = false;
         }

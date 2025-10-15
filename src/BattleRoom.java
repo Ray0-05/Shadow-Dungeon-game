@@ -109,7 +109,7 @@ public class BattleRoom extends Room{
 
         for (BulletKin bk: bulletKins){
             bk.update(getPlayer(), super.getAllProjectiles());
-            if (bk.isAlive()) {
+            if (!bk.isDead()) {
                 bk.draw();
                 Fireball fireball = bk.shoot(super.getPlayer());
                 if (fireball != null){
@@ -117,11 +117,11 @@ public class BattleRoom extends Room{
                 }
             }
         }
-        bulletKins.removeIf(b -> !b.isAlive());
+        bulletKins.removeIf(Damageable::isDead);
 
         for (AshenBulletKin abk: ashenBulletKins){
             abk.update(super.getPlayer(), super.getAllProjectiles());
-            if (abk.isAlive()){
+            if (!abk.isDead()){
                 abk.draw();
                 Fireball fireball = abk.shoot(super.getPlayer());
                 if (fireball != null){
@@ -129,7 +129,7 @@ public class BattleRoom extends Room{
                 }
             }
         }
-        ashenBulletKins.removeIf(abk -> !abk.isAlive());
+        ashenBulletKins.removeIf(Damageable::isDead);
 
         for (Wall wall: walls) {
             wall.update(super.getPlayer(), super.getAllProjectiles());
@@ -155,7 +155,9 @@ public class BattleRoom extends Room{
         }
 
         // Update and renders player + bullets
-        super.update(input);
+        super.PlayerAndBulletsUpdate(input);
+        getPlayer().draw();
+        super.DeletionAndRenderingOfAllProjectiles();
     }
 
     public Door findDoorByDestination(String roomName) {

@@ -16,7 +16,7 @@ public class TreasureBox extends GameObject implements CollidableWithPlayer{
     }
 
     public void update(Input input, Player player) {
-        if (hasCollidedWith(player) && input.wasPressed(Keys.K)) {
+        if (hasContactWith(player) && input.wasPressed(Keys.K)) {
             player.earnCoins(coinValue);
             active = false;
         }

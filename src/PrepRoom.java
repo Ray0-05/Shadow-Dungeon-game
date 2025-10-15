@@ -76,8 +76,10 @@ public class PrepRoom extends Room {
             }
         }
 
-        // Update and renders player + projectiles
-        super.update(input);
+        // Update and renders player + bullets
+        super.PlayerAndBulletsUpdate(input);
+        getPlayer().draw();
+        super.DeletionAndRenderingOfAllProjectiles();
 
 
     }

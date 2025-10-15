@@ -13,7 +13,7 @@ public class RestartArea extends GameObject implements CollidableWithPlayer{
     }
 
     public void update(Input input, Player player) {
-        if (hasCollidedWith(player) && input.wasPressed(Keys.ENTER)) {
+        if (hasContactWith(player) && input.wasPressed(Keys.ENTER)) {
             ShadowDungeon.resetGameState(ShadowDungeon.getGameProps());
         }
     }

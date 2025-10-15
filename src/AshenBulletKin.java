@@ -15,20 +15,19 @@ public class AshenBulletKin extends Enemy implements CollidableWithPlayer, Colli
 
     @Override
     public void update(Player player, ArrayList<Projectile> allProjectiles){
-        if (hasCollidedWith(player)){
-            super.damagePlayerOnContact(player);
+        if (hasContactWith(player)){
+            super.OnContactWithPlayer(player);
         }
 
         for (Projectile p : allProjectiles){
             // only interacts with bullets
             if (p instanceof Bullet){
                 if (hasCollidedWith(p)) {
-                    super.setHealth(super.getHealth() - p.getDamage());
+                    takeDamage(p.getDamage());
                     // destroy both enemy (if health < 0) and bullet
 
-                    if (super.getHealth() <= 0){
-                        super.setAlive(false);
-                        player.earnCoins(COIN);
+                    if (isDead()){
+                        onDeath(player);
                     }
 
                     p.setDestroyed(true);
@@ -38,6 +37,10 @@ public class AshenBulletKin extends Enemy implements CollidableWithPlayer, Colli
 
         // Reduce the cooldown time
         coolDownTimer.tick();
+    }
+
+    public void onDeath(Player player){
+        player.earnCoins(COIN);
     }
 
     public Fireball shoot(Player player) {

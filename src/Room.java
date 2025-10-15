@@ -13,17 +13,21 @@ public abstract class Room {
 
     public abstract void initEntities(Properties gameProperties);
 
-    public void update(Input input) {
+    public void PlayerAndBulletsUpdate(Input input) {
         if (player != null) {
-            player.update(input);
-            player.draw();
+            if (this instanceof BattleRoom) {
+                player.update(input, allProjectiles); // checks if hit by fireball too
+            } else {
+                player.update(input);
+            }
             Bullet newBullet = player.shoot(input);
             if (newBullet != null) {
                 allProjectiles.add(newBullet);
             }
         }
+    }
 
-
+    public void DeletionAndRenderingOfAllProjectiles(){
         Iterator<Projectile> it = allProjectiles.iterator();
         while (it.hasNext()) {
             Projectile p = it.next();
@@ -38,18 +42,15 @@ public abstract class Room {
             }
 
             // Double confirm with this
-            if (p.isDestroyed()){
+            if (p.isDestroyed()) {
                 it.remove(); // remove all allProjectiles that is set destroyed (etc crash with walls, enemy, tables, border)
-            }else {
+            } else {
                 p.draw();
             }
         }
-
-
-
     }
 
-    protected boolean stopUpdatingEarlyIfNeeded() {
+    public boolean stopUpdatingEarlyIfNeeded() {
         if (stopCurrentUpdateCall) {
             player = null;
             stopCurrentUpdateCall = false;

@@ -5,9 +5,13 @@ public interface CollidableWithPlayer {
     Rectangle getBoundingBox();
 
     // Default collision check
-    default boolean hasCollidedWith(Player player) {
+    default boolean hasContactWith(Player player) {
         return this.getBoundingBox()
-                .intersects(player.getCurrImage()
+                .intersects(player.getImage()
                         .getBoundingBoxAt(player.getPosition()));
     }
+
+    default void onContactWithPlayer(Player player){
+        // nothing to be done by default
+    };
 }

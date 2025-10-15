@@ -28,8 +28,8 @@ public class Door extends GameObject implements CollidableWithPlayer, Collidable
     }
 
     public void update(Player player, ArrayList<Projectile> allProjectiles) {
-        if (hasCollidedWith(player)) {
-            onCollideWith(player);
+        if (hasContactWith(player)) {
+            onContactWithPlayer(player);
         } else {
             onNoLongerCollide();
         }
@@ -47,8 +47,8 @@ public class Door extends GameObject implements CollidableWithPlayer, Collidable
         this.justEntered = justEntered;
     }
 
-
-    private void onCollideWith(Player player) {
+    @Override
+    public void onContactWithPlayer(Player player) {
         // when the player only just entered this door's room, overlapping with the unlocked door shouldn't trigger room transition
         if (unlocked && !justEntered) {
             ShadowDungeon.changeRoom(toRoomName);

@@ -13,7 +13,7 @@ public class Wall extends GameObject implements CollidableWithPlayer, Collidable
     }
 
     public void update(Player player, ArrayList<Projectile> projectiles) {
-        if (hasCollidedWith(player)) {
+        if (hasContactWith(player)) {
             // set the player to its position prior to attempting to move through this wall
             player.move(player.getPrevPosition().x, player.getPrevPosition().y);
         }

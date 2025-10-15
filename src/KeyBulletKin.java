@@ -1,26 +1,44 @@
 import bagel.Image;
 import bagel.util.Point;
 
+import java.util.ArrayList;
+import java.util.Properties;
+
 /**
  * Enemy that gets removed when the player overlaps with it
  */
-public class KeyBulletKin extends GameObject implements CollidableWithPlayer{
+public class KeyBulletKin extends Enemy{
     private boolean active = false; // only true when the Battle Room has been activated
-    private boolean dead = false;
     
     public KeyBulletKin(Point startPos) {
-        super(startPos, new Image("res/key_bullet_kin.png"));
+        super(startPos, EnemyCharacter.KEY_BULLET_KIN);
     }
 
-    public void update(Player player) {
-        if (hasContactWith(player)) {
-            dead = true;
-            active = false;
+    @Override
+    public void update(Player player, ArrayList<Projectile> allProjectiles) {
+        if (hasContactWith(player)){
+            super.OnContactWithPlayer(player);
         }
+
+        for (Projectile p : allProjectiles){
+            if ((p instanceof Bullet) && hasCollidedWith(p)){
+                takeDamage(p.getDamage());
+                p.setDestroyed(true);
+            }
+            if (isDead()){
+                active = false;
+            }
+        }
+
     }
+
 
     public boolean isDead() {
-        return dead;
+        return getHealth() <= 0;
+    }
+
+    public Key dropKey(){
+        return new Key(getPosition());
     }
 
     public boolean isActive() {

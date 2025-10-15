@@ -11,6 +11,7 @@ public class BattleRoom extends Room{
     private Door primaryDoor;
     private Door secondaryDoor;
     private KeyBulletKin keyBulletKin;
+    private Key key = null;
     private ArrayList<BulletKin> bulletKins;
     private ArrayList<AshenBulletKin> ashenBulletKins;
     private ArrayList<TreasureBox> treasureBoxes;
@@ -102,9 +103,16 @@ public class BattleRoom extends Room{
             return;
         }
 
-        if (keyBulletKin.isActive()) {
-            keyBulletKin.update(super.getPlayer());
+        if (keyBulletKin.isActive() && !keyBulletKin.isDead()) {
+            keyBulletKin.update(super.getPlayer(), getAllProjectiles());
             keyBulletKin.draw();
+        }else if (key == null && keyBulletKin.isDead()){
+            this.key = keyBulletKin.dropKey();
+        }
+
+        if (key != null && !key.isCollected()){
+            key.update(getPlayer());
+            key.draw();
         }
 
         for (BulletKin bk: bulletKins){

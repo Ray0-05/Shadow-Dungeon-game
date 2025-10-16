@@ -5,6 +5,7 @@ public enum Weapon {
 
     private final int damage;
     private final int level;
+    private final static int MAX_Level = 2;
     private final static int SHOT_COOLDOWN = Integer.parseInt(ShadowDungeon.getGameProps().getProperty("bulletFreq"));
 
     Weapon(int damage, int level){
@@ -22,5 +23,9 @@ public enum Weapon {
 
     public int getLevel() {
         return level;
+    }
+
+    public boolean canUpgrade(){
+        return this.level < MAX_Level;
     }
 }

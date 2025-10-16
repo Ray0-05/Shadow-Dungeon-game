@@ -9,15 +9,15 @@ import java.awt.*;
  * Helper methods to display information for the player
  */
 public class UserInterface {
-    public static void drawStats(double health, double coins, Weapon weapon, int keyNum) {
+    public static void drawStats(Player player) {
         int fontSize = Integer.parseInt(ShadowDungeon.getGameProps().getProperty("playerStats.fontSize"));
-        drawData(String.format("%s %.1f", ShadowDungeon.getMessageProps().getProperty("healthDisplay"), health), fontSize,
+        drawData(String.format("%s %.1f", ShadowDungeon.getMessageProps().getProperty("healthDisplay"), player.getHealth()), fontSize,
                 IOUtils.parseCoords(ShadowDungeon.getGameProps().getProperty("healthStat")));
-        drawData(String.format("%s %.0f", ShadowDungeon.getMessageProps().getProperty("coinDisplay"), coins), fontSize,
+        drawData(String.format("%s %.0f", ShadowDungeon.getMessageProps().getProperty("coinDisplay"), player.getCoins()), fontSize,
                 IOUtils.parseCoords(ShadowDungeon.getGameProps().getProperty("coinStat")));
-        drawData(String.format("%s %d", ShadowDungeon.getMessageProps().getProperty("weaponDisplay"), weapon.getLevel()), fontSize,
+        drawData(String.format("%s %d", ShadowDungeon.getMessageProps().getProperty("weaponDisplay"), player.getWeapon().getLevel()), fontSize,
                 IOUtils.parseCoords(ShadowDungeon.getGameProps().getProperty("weaponStat")));
-        drawData(String.format("%s %d", ShadowDungeon.getMessageProps().getProperty("keyDisplay"), keyNum), fontSize,
+        drawData(String.format("%s %d", ShadowDungeon.getMessageProps().getProperty("keyDisplay"), player.getKeyNum()), fontSize,
                 IOUtils.parseCoords(ShadowDungeon.getGameProps().getProperty("keyStat")));
     }
 

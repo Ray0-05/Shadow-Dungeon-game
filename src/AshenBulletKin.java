@@ -40,7 +40,7 @@ public class AshenBulletKin extends Enemy implements CollidableWithPlayer, Colli
     }
 
     public void onDeath(Player player){
-        player.earnCoins(COIN);
+        player.earnCoins(COIN + player.getExtraCoinPerKillIfEligible());
     }
 
     public Fireball shoot(Player player) {

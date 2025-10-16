@@ -15,6 +15,7 @@ public abstract class Room {
     public abstract void initEntities(Properties gameProperties);
 
     public abstract void update(Input input);
+    public abstract void renderOnly();
 
     public void PlayerAndBulletsUpdate(Input input) {
         if (player != null) {

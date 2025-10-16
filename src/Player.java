@@ -19,6 +19,9 @@ public class Player extends GameObject implements Damageable, CollidableWithProj
     private int keyNum = 0;
     private final CoolDownTimer coolDownTimer;
 
+    private static final int EXTRA_COIN_PER_KILL = Integer.parseInt(
+            ShadowDungeon.getGameProps().getProperty("robotExtraCoin"));
+
     public Player(Point position) {
         super(position, Character.ORIGINAL.getRightImage());
         this.character = Character.ORIGINAL;
@@ -82,9 +85,8 @@ public class Player extends GameObject implements Damageable, CollidableWithProj
 
     @Override
     public void draw() {
-        setImage(faceLeft ? character.getLeftImage() : character.getRightImage()); // NOTE: this is an example of using the ternary operator
+        setImage(faceLeft ? character.getLeftImage() : character.getRightImage());
         getImage().draw(getPosition().x, getPosition().y);
-        UserInterface.drawStats(health, coins, weapon, keyNum);
     }
 
     public void earnCoins(double coins) {
@@ -121,6 +123,17 @@ public class Player extends GameObject implements Damageable, CollidableWithProj
         return null; // no bullet fired
     }
 
+    public boolean isImmuneToWater(){
+        return character == Character.MARINE;
+    }
+
+    public int getExtraCoinPerKillIfEligible(){
+        if (character == Character.ROBOT){
+            return EXTRA_COIN_PER_KILL;
+        }
+        return 0;
+    }
+
     @Override
     public double getHealth() {
         return health;
@@ -141,5 +154,21 @@ public class Player extends GameObject implements Damageable, CollidableWithProj
 
     public int getKeyNum() {
         return keyNum;
+    }
+
+    public Weapon getWeapon() {
+        return weapon;
+    }
+
+    public void setWeapon(Weapon weapon) {
+        this.weapon = weapon;
+    }
+
+    public double getCoins() {
+        return coins;
+    }
+
+    public void setCoins(double coins) {
+        this.coins = coins;
     }
 }

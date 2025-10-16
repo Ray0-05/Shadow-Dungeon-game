@@ -67,20 +67,24 @@ public class ShadowDungeon extends AbstractGame {
         if (input.wasPressed(Keys.ESCAPE)) {
             Window.close();
         }
-
+        //always the background
         BACKGROUND.draw((double) Window.getWidth() / 2, (double) Window.getHeight() / 2);
+
 
         if (input.wasPressed(Keys.SPACE)){
             store.setActive(!store.isActive());
-
         }
 
         if (store.isActive()){
-            store.update(input);
+            currRoom.renderOnly();
+            store.update(input, player);
         }
         else{
             currRoom.update(input);
         }
+
+        // always visible and updated
+        UserInterface.drawStats(this.player);
 
     }
 

@@ -180,6 +180,48 @@ public class BattleRoom extends Room{
         super.DeletionAndRenderingOfAllProjectiles();
     }
 
+    @Override
+    public void renderOnly(){
+        primaryDoor.draw();
+        secondaryDoor.draw();
+        for (BulletKin bk: bulletKins){
+            bk.draw();
+        }
+
+        for (AshenBulletKin abk: ashenBulletKins){
+            abk.draw();
+        }
+
+        for (River river: rivers) {
+            river.draw();
+        }
+
+        for (TreasureBox treasureBox: treasureBoxes) {
+            if (treasureBox.isActive()) {
+                treasureBox.draw();
+            }
+        }
+
+        for (Obstacle o: obstacles){
+            if (!o.isDestroyed()){
+                o.draw();
+            }
+        }
+
+        if (keyBulletKin.isActive() && !keyBulletKin.isDead()) {
+            keyBulletKin.draw();
+        }
+
+        if (key != null && !key.isCollected()){
+            key.draw();
+        }
+
+        for (Projectile p : getAllProjectiles()){
+            p.draw();
+        }
+        getPlayer().draw();
+    }
+
     public Door findDoorByDestination(String roomName) {
         if (primaryDoor.toRoomName.equals(roomName)) {
             return primaryDoor;

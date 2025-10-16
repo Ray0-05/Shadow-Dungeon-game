@@ -63,6 +63,16 @@ public class EndRoom extends Room{
         super.DeletionAndRenderingOfAllProjectiles();
     }
 
+    public void renderOnly(){
+        UserInterface.drawEndMessage(!isGameOver);
+        door.draw();
+        restartArea.draw();
+        for (Projectile p : getAllProjectiles()){
+            p.draw();
+        }
+        getPlayer().draw();
+    }
+
     public Door findDoor() {
         return door;
     }

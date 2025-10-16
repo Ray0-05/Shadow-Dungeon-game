@@ -74,7 +74,18 @@ public class PrepRoom extends Room {
         getPlayer().draw();
         super.DeletionAndRenderingOfAllProjectiles();
 
+    }
 
+    public void renderOnly(){
+        UserInterface.drawStartMessages();
+        UserInterface.drawCharacterSelectionImage();
+        UserInterface.drawCharacterDescMessage();
+        door.draw();
+        restartArea.draw();
+        for (Projectile p : getAllProjectiles()){
+            p.draw();
+        }
+        getPlayer().draw();
     }
 
     public Door findDoor() {

@@ -13,7 +13,7 @@ public class River extends GameObject implements CollidableWithPlayer{
     }
 
     public void update(Player player) {
-        if (hasContactWith(player)) {
+        if (hasContactWith(player) && !player.isImmuneToWater()) {
             player.takeDamage(damagePerFrame);
         }
     }

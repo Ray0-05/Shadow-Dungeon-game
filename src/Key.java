@@ -10,6 +10,7 @@ public class Key extends GameObject implements CollidableWithPlayer{
 
     public void update(Player player){
         if (this.hasContactWith(player)){
+            player.collectKey();
             isCollected = true;
         }
     }

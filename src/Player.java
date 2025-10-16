@@ -16,6 +16,7 @@ public class Player extends GameObject implements Damageable, CollidableWithProj
     private double coins = 0;
     private boolean faceLeft = false;
     private Weapon weapon;
+    private int keyNum = 0;
     private final CoolDownTimer coolDownTimer;
 
     public Player(Point position) {
@@ -83,7 +84,7 @@ public class Player extends GameObject implements Damageable, CollidableWithProj
     public void draw() {
         setImage(faceLeft ? character.getLeftImage() : character.getRightImage()); // NOTE: this is an example of using the ternary operator
         getImage().draw(getPosition().x, getPosition().y);
-        UserInterface.drawStats(health, coins);
+        UserInterface.drawStats(health, coins, weapon, keyNum);
     }
 
     public void earnCoins(double coins) {
@@ -128,5 +129,17 @@ public class Player extends GameObject implements Damageable, CollidableWithProj
     @Override
     public void setHealth(double newHealth) {
         this.health = newHealth;
+    }
+
+    public void collectKey() {
+        this.keyNum++;
+    }
+
+    public void useKey(){
+        this.keyNum--;
+    }
+
+    public int getKeyNum() {
+        return keyNum;
     }
 }

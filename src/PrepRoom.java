@@ -39,12 +39,12 @@ public class PrepRoom extends Room {
         }
     }
 
-    public void update(Input input) {
+    public void updateAndRender(Input input) {
         UserInterface.drawStartMessages();
         UserInterface.drawCharacterSelectionImage();
         UserInterface.drawCharacterDescMessage();
 
-        // update and draw all game objects in this room
+        // updateAndRender and draw all game objects in this room
         door.update(super.getPlayer(), getAllProjectiles());
         door.draw();
         if (stopUpdatingEarlyIfNeeded()) {

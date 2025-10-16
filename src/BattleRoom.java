@@ -5,7 +5,8 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * Room with doors that are locked until the plaer collect the key from keybulletkin
+ * Room with doors that are locked until the player defeat all enemies.
+ * Contains enemies, obstacles, rivers, treasure boxes, and doors.
  */
 public class BattleRoom extends Room{
     private Door primaryDoor;
@@ -21,6 +22,12 @@ public class BattleRoom extends Room{
     private final String nextRoomName;
 
 
+    /**
+     * Constructs a BattleRoom with a name and the next room's name.
+     *
+     * @param roomName The name of this room.
+     * @param nextRoomName The name of the room that follows this room.
+     */
     public BattleRoom(String roomName, String nextRoomName) {
         rivers = new ArrayList<>();
         treasureBoxes = new ArrayList<>();
@@ -32,6 +39,11 @@ public class BattleRoom extends Room{
         super.setAllProjectiles(new ArrayList<>());
     }
 
+    /**
+     * Initializes all entities in the room based on the provided game properties.
+     *
+     * @param gameProperties The properties object containing configuration for this room.
+     */
     public void initEntities(Properties gameProperties) {
         // find the configuration of game objects for this room
         for (Map.Entry<Object, Object> entry: gameProperties.entrySet()) {
@@ -98,8 +110,13 @@ public class BattleRoom extends Room{
         }
     }
 
-    public void update(Input input) {
-        // update and draw all active game objects in this room
+    /**
+     * Updates all entities and renders them for this frame.
+     *
+     * @param input The current input state.
+     */
+    public void updateAndRender(Input input) {
+        // updateAndRender and draw all active game objects in this room
         primaryDoor.update(super.getPlayer(), getAllProjectiles());
         primaryDoor.draw();
         if (stopUpdatingEarlyIfNeeded()) {
@@ -180,6 +197,9 @@ public class BattleRoom extends Room{
         super.DeletionAndRenderingOfAllProjectiles();
     }
 
+    /**
+     * Renders all entities without updating their state.
+     */
     @Override
     public void renderOnly(){
         primaryDoor.draw();
@@ -222,6 +242,12 @@ public class BattleRoom extends Room{
         getPlayer().draw();
     }
 
+    /**
+     * Finds a door in this room that leads to the specified destination room.
+     *
+     * @param roomName The name of the destination room.
+     * @return The Door object leading to the specified room.
+     */
     public Door findDoorByDestination(String roomName) {
         if (primaryDoor.toRoomName.equals(roomName)) {
             return primaryDoor;
@@ -230,19 +256,35 @@ public class BattleRoom extends Room{
         }
     }
 
+    /**
+     * Unlocks both doors in the room.
+     */
     private void unlockAllDoors() {
         primaryDoor.unlock(false);
         secondaryDoor.unlock(false);
     }
 
+    /**
+     * Returns whether all enemies in the room are defeated.
+     *
+     * @return true if the room is complete, false otherwise.
+     */
     public boolean isComplete() {
         return isComplete;
     }
 
+    /**
+     * Sets the room's completion status.
+     *
+     * @param complete true to mark the room as complete, false otherwise.
+     */
     public void setComplete(boolean complete) {
         isComplete = complete;
     }
 
+    /**
+     * Activates all enemies in the room, making them active.
+     */
     public void activateEnemies() {
         keyBulletKin.setActive(true);
         for (AshenBulletKin abk: ashenBulletKins){
@@ -251,10 +293,34 @@ public class BattleRoom extends Room{
         for (BulletKin bk: bulletKins){
             bk.setActive(true);
         }
-
     }
 
+    /**
+     * Checks whether there are no more enemies remaining in the room.
+     *
+     * @return true if all enemies are dead, false otherwise.
+     */
     public boolean noMoreEnemies() {
-        return keyBulletKin.isDead();
+        // Check if the keyBulletKin is still alive
+        if (!keyBulletKin.isDead()) {
+            return false;
+        }
+
+        // Check if any AshenBulletKin is still alive
+        for (AshenBulletKin abk : ashenBulletKins) {
+            if (!abk.isDead()) {
+                return false;
+            }
+        }
+
+        // Check if any BulletKin is still alive
+        for (BulletKin bk : bulletKins) {
+            if (!bk.isDead()) {
+                return false;
+            }
+        }
+
+        // All enemies are dead
+        return true;
     }
 }

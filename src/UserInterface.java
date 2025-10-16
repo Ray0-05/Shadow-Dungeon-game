@@ -4,11 +4,17 @@ import bagel.Window;
 import bagel.util.Point;
 
 import java.awt.*;
-
 /**
- * Helper methods to display information for the player
+ * Provides helper methods to display game information and messages
+ * for the player, such as stats, start messages, end messages,
+ * character descriptions, and character selection images.
  */
 public class UserInterface {
+    /**
+     * Draws the player's stats on the screen, including health, coins, weapon level, and keys.
+     *
+     * @param player The player whose stats are displayed.
+     */
     public static void drawStats(Player player) {
         int fontSize = Integer.parseInt(ShadowDungeon.getGameProps().getProperty("playerStats.fontSize"));
         drawData(String.format("%s %.1f", ShadowDungeon.getMessageProps().getProperty("healthDisplay"), player.getHealth()), fontSize,
@@ -21,16 +27,27 @@ public class UserInterface {
                 IOUtils.parseCoords(ShadowDungeon.getGameProps().getProperty("keyStat")));
     }
 
+    /**
+     * Draws the start screen messages, such as title and movement instructions.
+     */
     public static void drawStartMessages() {
         drawTextCentered("title", Integer.parseInt(ShadowDungeon.getGameProps().getProperty("title.fontSize")), Double.parseDouble(ShadowDungeon.getGameProps().getProperty("title.y")));
         drawTextCentered("moveMessage", Integer.parseInt(ShadowDungeon.getGameProps().getProperty("prompt.fontSize")), Double.parseDouble(ShadowDungeon.getGameProps().getProperty("moveMessage.y")));
         drawTextCentered("selectMessage", Integer.parseInt(ShadowDungeon.getGameProps().getProperty("prompt.fontSize")), Double.parseDouble(ShadowDungeon.getGameProps().getProperty("selectMessage.y")));
     }
 
+    /**
+     * Draws the end game message depending on whether the player won or lost.
+     *
+     * @param win True if the player won, false if the player lost.
+     */
     public static void drawEndMessage(boolean win) {
         drawTextCentered(win ? "gameEnd.won" : "gameEnd.lost", Integer.parseInt(ShadowDungeon.getGameProps().getProperty("title.fontSize")), Double.parseDouble(ShadowDungeon.getGameProps().getProperty("title.y")));
     }
 
+    /**
+     * Draws character description messages for the player to read.
+     */
     public static void drawCharacterDescMessage() {
         Font font = new Font("res/wheaton.otf", Integer.parseInt(ShadowDungeon.getGameProps().getProperty("playerStats.fontSize")));
 
@@ -44,6 +61,9 @@ public class UserInterface {
         font.drawString(marineDesc, marineDescPoint.x, marineDescPoint.y);
     }
 
+    /**
+     * Draws the character selection images on the screen.
+     */
     public static void drawCharacterSelectionImage(){
         Point robotCoord = IOUtils.parseCoords(ShadowDungeon.getGameProps().getProperty("Robot"));
         Image robotImg = new Image("res/robot_sprite.png");
@@ -54,6 +74,13 @@ public class UserInterface {
         marineImg.draw(marineCoord.x, marineCoord.y);
     }
 
+    /**
+     * Draws a text string centered horizontally at the given vertical position.
+     *
+     * @param textPath The key for the text to display from message properties.
+     * @param fontSize The font size of the text.
+     * @param posY     The vertical position to draw the text.
+     */
     private static void drawTextCentered(String textPath, int fontSize, double posY) {
         Font font = new Font("res/wheaton.otf", fontSize);
         String text = ShadowDungeon.getMessageProps().getProperty(textPath);
@@ -61,6 +88,13 @@ public class UserInterface {
         font.drawString(text, posX, posY);
     }
 
+    /**
+     * Draws a string at a specified location on the screen.
+     *
+     * @param data     The text to draw.
+     * @param fontSize The font size of the text.
+     * @param location The position on screen where the text should be drawn.
+     */
     private static void drawData(String data, int fontSize, Point location) {
         Font font = new Font("res/wheaton.otf", fontSize);
         font.drawString(data, location.x, location.y);

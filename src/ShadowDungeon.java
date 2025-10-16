@@ -4,13 +4,13 @@ import bagel.util.Point;
 import java.util.Properties;
 
 /**
- * Main game class that manages initialising the rooms and moving the player between rooms
+ * Main game class that manages initializing the rooms and moving the player between rooms.
+ * Handles the game loop, room transitions, and maintains the overall game state including
+ * all rooms, the player, and the store.
  */
 public class ShadowDungeon extends AbstractGame {
     private static Properties gameProps;
     private static Properties messageProps;
-    private static double screenWidth;
-    private static double screenHeight;
 
     private static Room currRoom;
     private static PrepRoom prepRoom;
@@ -26,6 +26,14 @@ public class ShadowDungeon extends AbstractGame {
     public static final String BATTLE_ROOM_B_NAME = "B";
     public static final String END_ROOM_NAME = "end";
 
+    /**
+     * Creates a new Shadow Dungeon game instance and initializes all game components.
+     * Sets up the window dimensions, loads the background image, and creates all rooms
+     * and game entities from the provided properties files.
+     *
+     * @param gameProps contains game configuration like window size, entity positions, and stats
+     * @param messageProps contains all text messages displayed during gameplay
+     */
     public ShadowDungeon(Properties gameProps, Properties messageProps) {
         super(Integer.parseInt(gameProps.getProperty("window.width")),
                 Integer.parseInt(gameProps.getProperty("window.height")),
@@ -33,13 +41,18 @@ public class ShadowDungeon extends AbstractGame {
 
         ShadowDungeon.gameProps = gameProps;
         ShadowDungeon.messageProps = messageProps;
-        screenWidth = Integer.parseInt(gameProps.getProperty("window.width"));
-        screenHeight = Integer.parseInt(gameProps.getProperty("window.height"));
         this.BACKGROUND = new Image("res/background.png");
 
         resetGameState(gameProps);
     }
 
+    /**
+     * Resets the entire game state to its initial configuration.
+     * Recreates all rooms, reinitializes entities, resets the player position,
+     * and sets the current room back to the prep room. Used for starting a new game.
+     *
+     * @param gameProps contains the configuration data needed to initialize all game entities
+     */
     public static void resetGameState(Properties gameProps) {
         prepRoom = new PrepRoom(PREP_ROOM_NAME);
         battleRoomA = new BattleRoom(BATTLE_ROOM_A_NAME, BATTLE_ROOM_B_NAME);
@@ -59,8 +72,12 @@ public class ShadowDungeon extends AbstractGame {
     }
 
     /**
-     * Render the relevant screen based on the keyboard input given by the user and the status of the gameplay.
-     * @param input The current mouse/keyboard input.
+     * Main game loop that renders the screen and handles all user input.
+     * Draws the background, manages the store toggle, updates the current room,
+     * and displays the player stats. Handles ESC key to close the game and
+     * SPACE key to open/close the store.
+     *
+     * @param input captures the current keyboard and mouse state for this frame
      */
     @Override
     protected void update(Input input) {
@@ -80,7 +97,7 @@ public class ShadowDungeon extends AbstractGame {
             store.update(input, player);
         }
         else{
-            currRoom.update(input);
+            currRoom.updateAndRender(input);
         }
 
         // always visible and updated
@@ -88,7 +105,14 @@ public class ShadowDungeon extends AbstractGame {
 
     }
 
-
+    /**
+     * Transitions the player from the current room to the specified destination room.
+     * Handles door locking/unlocking logic, positions the player at the destination door,
+     * and sets up battle room states if necessary. For battle rooms, doors will lock
+     * again if the room hasn't been completed yet.
+     *
+     * @param destRoomName the name identifier of the room to transition to (prep, A, B, or end)
+     */
     public static void changeRoom(String destRoomName) {
         Door nextDoor;
         currRoom.stopCurrentUpdateCall();
@@ -128,6 +152,11 @@ public class ShadowDungeon extends AbstractGame {
 
     }
 
+    /**
+     * Transitions the game to the end room in game over state.
+     * Stops the current room's updateAndRender cycle, marks the end room as a game over scenario,
+     * and repositions the player to their starting position.
+     */
     public static void changeToGameOverRoom() {
         currRoom.stopCurrentUpdateCall();
 
@@ -139,14 +168,30 @@ public class ShadowDungeon extends AbstractGame {
         currRoom.setPlayer(player);
     }
 
-
+    /**
+     * Gets the game configuration properties.
+     *
+     * @return properties object containing game settings like dimensions, entity stats, and positions
+     */
     public static Properties getGameProps() {
         return gameProps;
     }
+
+    /**
+     * Gets the message properties for UI text.
+     *
+     * @return properties object containing all display messages used throughout the game
+     */
     public static Properties getMessageProps() {
         return messageProps;
     }
 
+    /**
+     * Entry point for the Shadow Dungeon game.
+     * Loads configuration files, creates the game instance, and starts the game loop.
+     *
+     * @param args command line arguments (not used)
+     */
     public static void main(String[] args) {
         Properties gameProps = IOUtils.readPropertiesFile("res/app.properties");
         Properties messageProps = IOUtils.readPropertiesFile("res/message.properties");

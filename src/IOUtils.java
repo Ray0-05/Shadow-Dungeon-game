@@ -25,6 +25,12 @@ public class IOUtils {
         return appProps;
     }
 
+    /**
+     * Parses a comma-separated coordinate string into a Point object.
+     *
+     * @param coords A string representing coordinates in the format "x,y".
+     * @return A Point object representing the parsed coordinates.
+     */
     public static Point parseCoords(String coords) {
         String[] coordinates = coords.split(",");
         return new Point(Double.parseDouble(coordinates[0]), Double.parseDouble(coordinates[1]));

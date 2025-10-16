@@ -3,26 +3,24 @@ import bagel.util.Point;
 
 import java.util.ArrayList;
 
-/**
- * Obstacle that blocks the player from moving through it
- */
-public class Wall extends Obstacle{
+public class Table extends Obstacle {
 
-    public Wall(Point position) {
-        super(position, new Image("res/wall.png"));
+    public Table(Point position){
+        super(position, new Image("res/table.png"));
     }
 
-    public void update(Player player, ArrayList<Projectile> projectiles) {
+    public void update(Player player, ArrayList<Projectile> allProjectiles){
         if (hasContactWith(player)) {
             // set the player to its position prior to attempting to move through this wall
             player.move(player.getPrevPosition().x, player.getPrevPosition().y);
         }
-        for (Projectile p: projectiles){
+        for (Projectile p: allProjectiles){
             if(hasCollidedWith(p)) {
                 p.setDestroyed(true);
-                // not destroyed here
+                if (p instanceof Bullet){
+                    setDestroyed(true);
+                }
             }
         }
     }
-
 }

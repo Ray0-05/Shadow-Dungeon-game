@@ -5,6 +5,8 @@ import java.util.ArrayList;
 public abstract class Enemy extends GameObject implements CollidableWithPlayer, CollidableWithProjectiles,
         Damageable {
     private double health;
+    private boolean active = false;
+
     private static final double DMG_ON_CONTACT = Double.parseDouble(
             ShadowDungeon.getGameProps().getProperty("riverDamagePerFrame")
     );
@@ -26,5 +28,13 @@ public abstract class Enemy extends GameObject implements CollidableWithPlayer, 
 
     public void setHealth(double newHealth) {
         this.health = newHealth;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

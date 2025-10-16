@@ -12,21 +12,21 @@ public class BattleRoom extends Room{
     private Door secondaryDoor;
     private KeyBulletKin keyBulletKin;
     private Key key = null;
+    private ArrayList<Obstacle> obstacles;
     private ArrayList<BulletKin> bulletKins;
     private ArrayList<AshenBulletKin> ashenBulletKins;
     private ArrayList<TreasureBox> treasureBoxes;
-    private ArrayList<Wall> walls;
     private ArrayList<River> rivers;
     private boolean isComplete = false;
     private final String nextRoomName;
     private final String roomName;
 
     public BattleRoom(String roomName, String nextRoomName) {
-        walls = new ArrayList<>();
         rivers = new ArrayList<>();
         treasureBoxes = new ArrayList<>();
         bulletKins = new ArrayList<>();
         ashenBulletKins = new ArrayList<>();
+        obstacles = new ArrayList<>();
         this.roomName = roomName;
         this.nextRoomName = nextRoomName;
         super.setAllProjectiles(new ArrayList<>());
@@ -68,12 +68,20 @@ public class BattleRoom extends Room{
                             break;
                         case "wall":
                             Wall wall = new Wall(IOUtils.parseCoords(coords));
-                            walls.add(wall);
+                            obstacles.add(wall);
                             break;
                         case "treasurebox":
                             TreasureBox treasureBox = new TreasureBox(IOUtils.parseCoords(coords),
                                     Double.parseDouble(coords.split(",")[2]));
                             treasureBoxes.add(treasureBox);
+                            break;
+                        case "table":
+                            Table table = new Table(IOUtils.parseCoords(coords));
+                            obstacles.add(table);
+                            break;
+                        case "basket":
+                            Basket basket = new Basket(IOUtils.parseCoords(coords));
+                            obstacles.add(basket);
                             break;
                         case "river":
                             River river = new River(IOUtils.parseCoords(coords));
@@ -106,8 +114,8 @@ public class BattleRoom extends Room{
 
 
         for (BulletKin bk: bulletKins){
-            bk.update(getPlayer(), super.getAllProjectiles());
-            if (!bk.isDead()) {
+            if (bk.isActive() && !bk.isDead()) {
+                bk.update(getPlayer(), super.getAllProjectiles());
                 bk.draw();
                 Fireball fireball = bk.shoot(super.getPlayer());
                 if (fireball != null){
@@ -118,8 +126,8 @@ public class BattleRoom extends Room{
         bulletKins.removeIf(Damageable::isDead);
 
         for (AshenBulletKin abk: ashenBulletKins){
-            abk.update(super.getPlayer(), super.getAllProjectiles());
-            if (!abk.isDead()){
+            if (abk.isActive() && !abk.isDead()){
+                abk.update(super.getPlayer(), super.getAllProjectiles());
                 abk.draw();
                 Fireball fireball = abk.shoot(super.getPlayer());
                 if (fireball != null){
@@ -128,11 +136,6 @@ public class BattleRoom extends Room{
             }
         }
         ashenBulletKins.removeIf(Damageable::isDead);
-
-        for (Wall wall: walls) {
-            wall.update(super.getPlayer(), super.getAllProjectiles());
-            wall.draw();
-        }
 
         for (River river: rivers) {
             river.update(super.getPlayer());
@@ -143,6 +146,13 @@ public class BattleRoom extends Room{
             if (treasureBox.isActive()) {
                 treasureBox.update(input, super.getPlayer());
                 treasureBox.draw();
+            }
+        }
+
+        for (Obstacle o: obstacles){
+            if (!o.isDestroyed()){
+                o.update(getPlayer(), getAllProjectiles());
+                o.draw();
             }
         }
 
@@ -193,6 +203,13 @@ public class BattleRoom extends Room{
 
     public void activateEnemies() {
         keyBulletKin.setActive(true);
+        for (AshenBulletKin abk: ashenBulletKins){
+            abk.setActive(true);
+        }
+        for (BulletKin bk: bulletKins){
+            bk.setActive(true);
+        }
+
     }
 
     public boolean noMoreEnemies() {

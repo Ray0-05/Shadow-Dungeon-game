@@ -1,6 +1,9 @@
 import bagel.Font;
+import bagel.Image;
 import bagel.Window;
 import bagel.util.Point;
+
+import java.awt.*;
 
 /**
  * Helper methods to display information for the player
@@ -39,6 +42,16 @@ public class UserInterface {
 
         font.drawString(robotDesc, robotDescPoint.x, robotDescPoint.y);
         font.drawString(marineDesc, marineDescPoint.x, marineDescPoint.y);
+    }
+
+    public static void drawCharacterSelectionImage(){
+        Point robotCoord = IOUtils.parseCoords(ShadowDungeon.getGameProps().getProperty("Robot"));
+        Image robotImg = new Image("res/robot_sprite.png");
+        Point marineCoord = IOUtils.parseCoords(ShadowDungeon.getGameProps().getProperty("Marine"));
+        Image marineImg = new Image("res/marine_sprite.png");
+
+        robotImg.draw(robotCoord.x, robotCoord.y);
+        marineImg.draw(marineCoord.x, marineCoord.y);
     }
 
     private static void drawTextCentered(String textPath, int fontSize, double posY) {

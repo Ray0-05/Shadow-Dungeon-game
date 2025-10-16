@@ -11,8 +11,6 @@ import java.util.Properties;
 public class PrepRoom extends Room {
     private Door door;
     private RestartArea restartArea;
-    private RobotSprite robotSprite;
-    private MarineSprite marineSprite;
 
     public void initEntities(Properties gameProperties) {
         // find the configuration of game objects for this room
@@ -34,17 +32,12 @@ public class PrepRoom extends Room {
                     default:
                 }
             }
-            else if (entry.getKey().toString().contains("Robot")){
-                robotSprite = new RobotSprite(IOUtils.parseCoords(entry.getValue().toString()));
-            }
-            else if (entry.getKey().toString().contains("Marine")) {
-                marineSprite = new MarineSprite(IOUtils.parseCoords(entry.getValue().toString()));
-            }
         }
     }
 
     public void update(Input input) {
         UserInterface.drawStartMessages();
+        UserInterface.drawCharacterSelectionImage();
         UserInterface.drawCharacterDescMessage();
 
         // update and draw all game objects in this room
@@ -53,10 +46,6 @@ public class PrepRoom extends Room {
         if (stopUpdatingEarlyIfNeeded()) {
             return;
         }
-
-        // Draw two characters images, no interaction here
-        robotSprite.draw();
-        marineSprite.draw();
 
         restartArea.update(input, super.getPlayer());
         restartArea.draw();

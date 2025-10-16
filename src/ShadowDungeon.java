@@ -7,10 +7,10 @@ import java.util.Properties;
  * Main game class that manages initialising the rooms and moving the player between rooms
  */
 public class ShadowDungeon extends AbstractGame {
-    public static Properties gameProps;
-    public static Properties messageProps;
-    public static double screenWidth;
-    public static double screenHeight;
+    private static Properties gameProps;
+    private static Properties messageProps;
+    private static double screenWidth;
+    private static double screenHeight;
 
     private static String currRoomName;
     private static PrepRoom prepRoom;
@@ -18,6 +18,7 @@ public class ShadowDungeon extends AbstractGame {
     private static BattleRoom battleRoomB;
     private static EndRoom endRoom;
     private static Player player;
+    private static Store store;
     private final Image BACKGROUND;
     
     public static final String PREP_ROOM_NAME = "prep";
@@ -44,6 +45,7 @@ public class ShadowDungeon extends AbstractGame {
         battleRoomA = new BattleRoom(BATTLE_ROOM_A_NAME, BATTLE_ROOM_B_NAME);
         battleRoomB = new BattleRoom(BATTLE_ROOM_B_NAME, END_ROOM_NAME);
         endRoom = new EndRoom();
+        store = new Store();
 
         prepRoom.initEntities(gameProps);
         battleRoomA.initEntities(gameProps);
@@ -68,18 +70,28 @@ public class ShadowDungeon extends AbstractGame {
 
         BACKGROUND.draw((double) Window.getWidth() / 2, (double) Window.getHeight() / 2);
 
-        switch (currRoomName) {
-            case PREP_ROOM_NAME:
-                prepRoom.update(input);
-                return;
-            case BATTLE_ROOM_A_NAME:
-                battleRoomA.update(input);
-                return;
-            case BATTLE_ROOM_B_NAME:
-                battleRoomB.update(input);
-                return;
-            default:
-                endRoom.update(input);
+        if (input.wasPressed(Keys.SPACE)){
+            store.setActive(!store.isActive());
+
+        }
+
+        if (store.isActive()){
+            store.update(input);
+        }
+        else{
+            switch (currRoomName) {
+                case PREP_ROOM_NAME:
+                    prepRoom.update(input);
+                    return;
+                case BATTLE_ROOM_A_NAME:
+                    battleRoomA.update(input);
+                    return;
+                case BATTLE_ROOM_B_NAME:
+                    battleRoomB.update(input);
+                    return;
+                default:
+                    endRoom.update(input);
+            }
         }
     }
 

@@ -10,8 +10,11 @@ public abstract class Room {
     private Player player;
     private boolean stopCurrentUpdateCall = false; // this determines whether to prematurely stop the update execution
     private ArrayList<Projectile> allProjectiles;
+    private String roomName;
 
     public abstract void initEntities(Properties gameProperties);
+
+    public abstract void update(Input input);
 
     public void PlayerAndBulletsUpdate(Input input) {
         if (player != null) {
@@ -81,4 +84,11 @@ public abstract class Room {
         return player;
     }
 
+    public String getRoomName() {
+        return roomName;
+    }
+
+    public void setRoomName(String roomName) {
+        this.roomName = roomName;
+    }
 }

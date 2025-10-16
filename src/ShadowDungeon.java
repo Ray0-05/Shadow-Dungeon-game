@@ -12,7 +12,7 @@ public class ShadowDungeon extends AbstractGame {
     private static double screenWidth;
     private static double screenHeight;
 
-    private static String currRoomName;
+    private static Room currRoom;
     private static PrepRoom prepRoom;
     private static BattleRoom battleRoomA;
     private static BattleRoom battleRoomB;
@@ -41,10 +41,10 @@ public class ShadowDungeon extends AbstractGame {
     }
 
     public static void resetGameState(Properties gameProps) {
-        prepRoom = new PrepRoom();
+        prepRoom = new PrepRoom(PREP_ROOM_NAME);
         battleRoomA = new BattleRoom(BATTLE_ROOM_A_NAME, BATTLE_ROOM_B_NAME);
         battleRoomB = new BattleRoom(BATTLE_ROOM_B_NAME, END_ROOM_NAME);
-        endRoom = new EndRoom();
+        endRoom = new EndRoom(END_ROOM_NAME);
         store = new Store();
 
         prepRoom.initEntities(gameProps);
@@ -52,7 +52,7 @@ public class ShadowDungeon extends AbstractGame {
         battleRoomB.initEntities(gameProps);
         endRoom.initEntities(gameProps);
 
-        currRoomName = PREP_ROOM_NAME;
+        currRoom = prepRoom;
 
         ShadowDungeon.player = new Player(IOUtils.parseCoords(gameProps.getProperty("player.start")));
         prepRoom.setPlayer(player);
@@ -79,117 +79,60 @@ public class ShadowDungeon extends AbstractGame {
             store.update(input);
         }
         else{
-            switch (currRoomName) {
-                case PREP_ROOM_NAME:
-                    prepRoom.update(input);
-                    return;
-                case BATTLE_ROOM_A_NAME:
-                    battleRoomA.update(input);
-                    return;
-                case BATTLE_ROOM_B_NAME:
-                    battleRoomB.update(input);
-                    return;
-                default:
-                    endRoom.update(input);
-            }
+            currRoom.update(input);
         }
+
     }
+
 
     public static void changeRoom(String destRoomName) {
         Door nextDoor;
+        currRoom.stopCurrentUpdateCall();
         switch (destRoomName) {
             case PREP_ROOM_NAME:
                 nextDoor = prepRoom.findDoor();
+                currRoom = prepRoom;
 
-                // assume that prep room can only be entered through Battle Room A
-                if (currRoomName.equals(BATTLE_ROOM_A_NAME)) {
-                    battleRoomA.stopCurrentUpdateCall();
-                }
-                currRoomName = PREP_ROOM_NAME;
-
-                // move the player to the center of the next room's door
-                nextDoor.unlock(true);
-                player.move(nextDoor.getPosition().x, nextDoor.getPosition().y);
-                prepRoom.setPlayer(player);
-
-                return;
+                break;
             case BATTLE_ROOM_A_NAME:
-                nextDoor = battleRoomA.findDoorByDestination(currRoomName);
-
-                // assume that Battle Room A can only be entered through Prep Room or Battle Room B
-                if (currRoomName.equals(BATTLE_ROOM_B_NAME)) {
-                    battleRoomB.stopCurrentUpdateCall();
-                } else if (currRoomName.equals(PREP_ROOM_NAME)) {
-                    prepRoom.stopCurrentUpdateCall();
-                }
-                currRoomName = BATTLE_ROOM_A_NAME;
-
+                nextDoor = battleRoomA.findDoorByDestination(currRoom.getRoomName());
+                currRoom = battleRoomA;
                 // prepare the door to be able to activate the Battle Room
-                if (!battleRoomA.isComplete()) {
+                if (!((BattleRoom) currRoom).isComplete()) {
                     nextDoor.setShouldLockAgain();
                 }
-
-                // move the player to the center of the next room's door
-                nextDoor.unlock(true);
-                player.move(nextDoor.getPosition().x, nextDoor.getPosition().y);
-                battleRoomA.setPlayer(player);
-
-                return;
+                break;
             case BATTLE_ROOM_B_NAME:
-                nextDoor = battleRoomB.findDoorByDestination(currRoomName);
-
-                // assume that Battle Room B can only be entered through Battle Room A or End Room
-                if (currRoomName.equals(BATTLE_ROOM_A_NAME)) {
-                    battleRoomA.stopCurrentUpdateCall();
-                } else if (currRoomName.equals(END_ROOM_NAME)) {
-                    endRoom.stopCurrentUpdateCall();
-                }
-                currRoomName = BATTLE_ROOM_B_NAME;
+                nextDoor = battleRoomB.findDoorByDestination(currRoom.getRoomName());
+                currRoom = battleRoomB;
 
                 // prepare the door to be able to activate the Battle Room
-                if (!battleRoomB.isComplete()) {
+                if (!((BattleRoom) currRoom).isComplete()) {
                     nextDoor.setShouldLockAgain();
                 }
 
-                // move the player to the center of the next room's door
-                nextDoor.unlock(true);
-                player.move(nextDoor.getPosition().x, nextDoor.getPosition().y);
-                battleRoomB.setPlayer(player);
-
-                return;
+                break;
             default:
                 nextDoor = endRoom.findDoor();
-
-                // assume that end room can only be entered through Battle Room B
-                if (currRoomName.equals(BATTLE_ROOM_B_NAME)) {
-                    battleRoomB.stopCurrentUpdateCall();
-                }
-                currRoomName = END_ROOM_NAME;
-
-                // move the player to the center of the next room's door
-                nextDoor.unlock(true);
-                player.move(nextDoor.getPosition().x, nextDoor.getPosition().y);
-                endRoom.setPlayer(player);
+                currRoom = endRoom;
         }
+
+        // move the player to the center of the next room's door
+        nextDoor.unlock(true);
+        player.move(nextDoor.getPosition().x, nextDoor.getPosition().y);
+        currRoom.setPlayer(player);
+
     }
 
     public static void changeToGameOverRoom() {
-        switch (currRoomName) {
-            case PREP_ROOM_NAME:
-                prepRoom.stopCurrentUpdateCall();
-            case BATTLE_ROOM_A_NAME:
-                battleRoomA.stopCurrentUpdateCall();
-            case BATTLE_ROOM_B_NAME:
-                battleRoomB.stopCurrentUpdateCall();
-            default:
-        }
+        currRoom.stopCurrentUpdateCall();
 
         endRoom.isGameOver();
-        currRoomName = END_ROOM_NAME;
+        currRoom = endRoom;
 
         Point startPos = IOUtils.parseCoords(ShadowDungeon.getGameProps().getProperty("player.start"));
         player.move(startPos.x, startPos.y);
-        endRoom.setPlayer(player);
+        currRoom.setPlayer(player);
     }
 
 

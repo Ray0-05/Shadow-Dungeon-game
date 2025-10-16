@@ -12,6 +12,10 @@ public class EndRoom extends Room{
     private RestartArea restartArea;
     private boolean isGameOver = false;
 
+    public EndRoom(String roomName){
+        setRoomName(roomName);
+    }
+
     public void initEntities(Properties gameProperties) {
         super.setAllProjectiles(new ArrayList<>());
         // find the configuration of game objects for this room

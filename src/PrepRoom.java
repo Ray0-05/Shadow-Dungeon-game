@@ -12,6 +12,10 @@ public class PrepRoom extends Room {
     private Door door;
     private RestartArea restartArea;
 
+    public PrepRoom(String roomName){
+        setRoomName(roomName);
+    }
+
     public void initEntities(Properties gameProperties) {
         // find the configuration of game objects for this room
         super.setAllProjectiles(new ArrayList<>());

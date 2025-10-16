@@ -19,7 +19,7 @@ public class BattleRoom extends Room{
     private ArrayList<River> rivers;
     private boolean isComplete = false;
     private final String nextRoomName;
-    private final String roomName;
+
 
     public BattleRoom(String roomName, String nextRoomName) {
         rivers = new ArrayList<>();
@@ -27,7 +27,7 @@ public class BattleRoom extends Room{
         bulletKins = new ArrayList<>();
         ashenBulletKins = new ArrayList<>();
         obstacles = new ArrayList<>();
-        this.roomName = roomName;
+        setRoomName(roomName);
         this.nextRoomName = nextRoomName;
         super.setAllProjectiles(new ArrayList<>());
     }
@@ -35,7 +35,7 @@ public class BattleRoom extends Room{
     public void initEntities(Properties gameProperties) {
         // find the configuration of game objects for this room
         for (Map.Entry<Object, Object> entry: gameProperties.entrySet()) {
-            String roomSuffix = String.format(".%s", roomName);
+            String roomSuffix = String.format(".%s", this.getRoomName());
 
             if (entry.getKey().toString().contains(roomSuffix)) {
                 String objectType = entry.getKey().toString()
